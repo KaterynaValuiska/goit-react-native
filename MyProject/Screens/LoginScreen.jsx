@@ -4,11 +4,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 function LoginScreen() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [focus, setFocus] = useState(true);
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container, top: focus ? 273 : 323 }}>
       <Text style={styles.title}>Sign in</Text>
       <TextInput
         style={styles.input}
@@ -49,7 +50,6 @@ const styles = StyleSheet.create({
   container: {
     width: 375,
     height: 549,
-    top: 263,
     paddingTop: 32,
     backgroundColor: "white",
     borderTopStartRadius: 25,

@@ -5,10 +5,8 @@ import {
   View,
   TextInput,
   Pressable,
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 function RegistrationScreen() {
@@ -33,7 +31,7 @@ function RegistrationScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
+      <View style={{ ...styles.container, top: focus ? 143 : 263 }}>
         <View style={styles.photoBlok}>
           <MaterialCommunityIcons
             name={"plus-circle-outline"}
@@ -44,45 +42,41 @@ function RegistrationScreen() {
           />
         </View>
         <Text style={styles.title}>Registration</Text>
-        <KeyboardAvoidingView
-          behavior={Platform.OS == "ios" ? "padding" : "height"}
-        >
-          <TextInput
-            style={!focus ? input : inputFocus}
-            placeholder="Login"
-            type="text"
-            value={name}
-            placeholderTextColor="#aaa"
-            autoComplete="text"
-            onChangeText={setName}
-            onFocus={onFocus}
-            onBlur={onBlur}
-          />
-          <TextInput
-            style={!focus ? input : inputFocus}
-            placeholder="email"
-            type="email"
-            placeholderTextColor="#aaa"
-            autoComplete="email"
-            onChangeText={setEmail}
-            onFocus={onFocus}
-            onBlur={onBlur}
-          />
-          <TextInput
-            style={!focus ? input : inputFocus}
-            placeholder="password"
-            type="password"
-            placeholderTextColor="#aaa"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={setPassword}
-            autoComplete="password"
-            onFocus={onFocus}
-            onBlur={onBlur}
-          />
-        </KeyboardAvoidingView>
+
+        <TextInput
+          style={!focus ? input : inputFocus}
+          placeholder="Login"
+          type="text"
+          value={name}
+          placeholderTextColor="#aaa"
+          onChangeText={setName}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        />
+        <TextInput
+          style={!focus ? input : inputFocus}
+          placeholder="email"
+          type="email"
+          value={email}
+          placeholderTextColor="#aaa"
+          onChangeText={setEmail}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        />
+        <TextInput
+          style={!focus ? input : inputFocus}
+          placeholder="password"
+          type="password"
+          placeholderTextColor="#aaa"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        />
+
         <MaterialCommunityIcons
-          name={showPassword ? "eye-off" : "eye"}
+          name={!showPassword ? "eye-off" : "eye"}
           size={24}
           color="#aaa"
           style={styles.icon}
@@ -99,13 +93,16 @@ function RegistrationScreen() {
 }
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: 375,
     height: 549,
-    top: 263,
     paddingTop: 100,
     backgroundColor: "white",
     borderTopStartRadius: 25,
     borderTopEndRadius: 25,
+    alignItems: "center",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   photoBlok: {
     width: 120,
