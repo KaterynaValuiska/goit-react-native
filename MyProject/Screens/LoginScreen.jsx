@@ -1,10 +1,39 @@
 import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import { useState } from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 function LoginScreen() {
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign in</Text>
-      <TextInput style={styles.input} placeholder="email" />
-      <TextInput style={styles.input} placeholder="password" type="password" />
+      <TextInput
+        style={styles.input}
+        placeholder="email"
+        type="email"
+        placeholderTextColor="#aaa"
+        autoComplete="email"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="password"
+        type="password"
+        placeholderTextColor="#aaa"
+        secureTextEntry={!showPassword}
+        value={password}
+        onChangeText={setPassword}
+        autoComplete="password"
+      />
+      <MaterialCommunityIcons
+        name={showPassword ? "eye-off" : "eye"}
+        size={24}
+        color="#aaa"
+        style={styles.icon}
+        onPress={toggleShowPassword}
+      />
       <Pressable
         style={styles.button}
         onPress={() => console.log("Button with adjusted color pressed")}
@@ -21,26 +50,14 @@ const styles = StyleSheet.create({
     width: 375,
     height: 549,
     top: 263,
-    borderColor: "red",
-    borderWidth: 1,
-    paddingTop: 100,
+    paddingTop: 32,
     backgroundColor: "white",
     borderTopStartRadius: 25,
     borderTopEndRadius: 25,
+    alignItems: "center",
+    margin: "auto",
   },
-  photoBlok: {
-    width: 120,
-    height: 120,
-    backgroundColor: "#F6F6F6",
-    position: "absolute",
-    top: -60,
-    left: "34%",
-    borderRadius: 16,
-  },
-  buttonX: {
-    left: 105,
-    top: 80,
-  },
+
   input: {
     marginRight: 16,
     marginLeft: 16,
@@ -57,10 +74,12 @@ const styles = StyleSheet.create({
   },
   icon: {
     top: -35,
-    left: 320,
+    left: 150,
   },
   title: {
     textAlign: "center",
+    color: "#212121",
+    fontSize: 30,
   },
   button: {
     marginTop: 43,

@@ -7,6 +7,9 @@ function RegistrationScreen() {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+  const signIn = () => {
+    console.debug("Welcome!");
+  };
   return (
     <View style={styles.container}>
       <View style={styles.photoBlok}>
@@ -24,12 +27,14 @@ function RegistrationScreen() {
         placeholder="Login"
         type="text"
         placeholderTextColor="#aaa"
+        autoComplete="text"
       />
       <TextInput
         style={styles.input}
         placeholder="email"
         type="email"
         placeholderTextColor="#aaa"
+        autoComplete="email"
       />
       <TextInput
         style={styles.input}
@@ -39,6 +44,7 @@ function RegistrationScreen() {
         secureTextEntry={!showPassword}
         value={password}
         onChangeText={setPassword}
+        autoComplete="password"
       />
       <MaterialCommunityIcons
         name={showPassword ? "eye-off" : "eye"}
@@ -47,10 +53,7 @@ function RegistrationScreen() {
         style={styles.icon}
         onPress={toggleShowPassword}
       />
-      <Pressable
-        style={styles.button}
-        onPress={() => console.log("Button with adjusted color pressed")}
-      >
+      <Pressable style={styles.button} onPress={signIn}>
         <Text style={styles.text}>Sign up</Text>
       </Pressable>
       <Text style={styles.textSignUp}>Do you have an account? Sign in</Text>
@@ -63,8 +66,6 @@ const styles = StyleSheet.create({
     width: 375,
     height: 549,
     top: 263,
-    borderColor: "red",
-    borderWidth: 1,
     paddingTop: 100,
     backgroundColor: "white",
     borderTopStartRadius: 25,
@@ -103,6 +104,8 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
+    color: "#212121",
+    fontSize: 30,
   },
   button: {
     marginTop: 43,
