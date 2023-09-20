@@ -11,10 +11,12 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 function RegistrationScreen() {
   const [name, setName] = useState("");
+  const [nameFocus, setNameFocus] = useState(true);
   const [email, setEmail] = useState("");
+  const [emailFocus, setEmailFocus] = useState(true);
   const [password, setPassword] = useState("");
+  const [passwordFocus, setPasswordFocus] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [focus, setFocus] = useState(true);
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -22,16 +24,15 @@ function RegistrationScreen() {
     console.debug("Welcome!");
     console.debug(`${name}, ${email}, ${password}`);
   };
-  const onFocus = () => {
-    setFocus(true);
-  };
-  const onBlur = () => {
-    setFocus(false);
-  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={{ ...styles.container, top: focus ? 143 : 263 }}>
+      <View
+        style={{
+          ...styles.container,
+          top: nameFocus || emailFocus || passwordFocus ? 143 : 263,
+        }}
+      >
         <View style={styles.photoBlok}>
           <MaterialCommunityIcons
             name={"plus-circle-outline"}
@@ -44,35 +45,35 @@ function RegistrationScreen() {
         <Text style={styles.title}>Registration</Text>
 
         <TextInput
-          style={!focus ? input : inputFocus}
+          style={!nameFocus ? input : inputFocus}
           placeholder="Login"
           type="text"
           value={name}
           placeholderTextColor="#aaa"
           onChangeText={setName}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={() => setNameFocus(true)}
+          onBlur={() => setNameFocus(false)}
         />
         <TextInput
-          style={!focus ? input : inputFocus}
+          style={!emailFocus ? input : inputFocus}
           placeholder="email"
           type="email"
           value={email}
           placeholderTextColor="#aaa"
           onChangeText={setEmail}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={() => setEmailFocus(true)}
+          onBlur={() => setEmailFocus(false)}
         />
         <TextInput
-          style={!focus ? input : inputFocus}
+          style={!passwordFocus ? input : inputFocus}
           placeholder="password"
           type="password"
           placeholderTextColor="#aaa"
           secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={() => setPasswordFocus(true)}
+          onBlur={() => setPasswordFocus(false)}
         />
 
         <MaterialCommunityIcons
@@ -94,7 +95,7 @@ function RegistrationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: 375,
+    width: "100%",
     height: 549,
     paddingTop: 100,
     backgroundColor: "white",
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     top: -35,
-    left: 320,
+    left: 145,
   },
   title: {
     textAlign: "center",

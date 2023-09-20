@@ -1,54 +1,77 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Pressable,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [emailFocus, setEmailFocus] = useState(true);
   const [password, setPassword] = useState("");
+  const [passwordFocus, setPasswordFocus] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [focus, setFocus] = useState(true);
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+  const signUp = () => {
+    console.debug("Welcome!");
+    console.debug(`${email}, ${password}`);
+  };
+
   return (
-    <View style={{ ...styles.container, top: focus ? 273 : 323 }}>
-      <Text style={styles.title}>Sign in</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="email"
-        type="email"
-        placeholderTextColor="#aaa"
-        autoComplete="email"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="password"
-        type="password"
-        placeholderTextColor="#aaa"
-        secureTextEntry={!showPassword}
-        value={password}
-        onChangeText={setPassword}
-        autoComplete="password"
-      />
-      <MaterialCommunityIcons
-        name={showPassword ? "eye-off" : "eye"}
-        size={24}
-        color="#aaa"
-        style={styles.icon}
-        onPress={toggleShowPassword}
-      />
-      <Pressable
-        style={styles.button}
-        onPress={() => console.log("Button with adjusted color pressed")}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
+        style={{
+          ...styles.container,
+          top: emailFocus || passwordFocus ? 273 : 323,
+        }}
       >
-        <Text style={styles.text}>Sign in</Text>
-      </Pressable>
-      <Text style={styles.textSignUp}>Don't have an account? Sign up</Text>
-    </View>
+        <Text style={styles.title}>Sign in</Text>
+        <TextInput
+          style={!emailFocus ? input : inputFocus}
+          placeholder="email"
+          type="email"
+          value={email}
+          placeholderTextColor="#aaa"
+          onChangeText={setEmail}
+          onFocus={() => setEmailFocus(true)}
+          onBlur={() => setEmailFocus(false)}
+        />
+        <TextInput
+          style={!passwordFocus ? input : inputFocus}
+          placeholder="password"
+          type="password"
+          placeholderTextColor="#aaa"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+          onFocus={() => setPasswordFocus(true)}
+          onBlur={() => setPasswordFocus(false)}
+        />
+        <MaterialCommunityIcons
+          name={showPassword ? "eye-off" : "eye"}
+          size={24}
+          color="#aaa"
+          style={styles.icon}
+          onPress={toggleShowPassword}
+        />
+        <Pressable style={styles.button} onPress={signUp}>
+          <Text style={styles.text}>Sign in</Text>
+        </Pressable>
+        <Text style={styles.textSignUp}>Don't have an account? Sign up</Text>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: 375,
+    width: "100%",
     height: 549,
     paddingTop: 32,
     backgroundColor: "white",
@@ -58,20 +81,6 @@ const styles = StyleSheet.create({
     margin: "auto",
   },
 
-  input: {
-    marginRight: 16,
-    marginLeft: 16,
-    marginBottom: 0,
-    marginTop: 16,
-    borderWidth: 1,
-    padding: 16,
-    width: 343,
-    height: 50,
-    borderColor: "#E8E8E8",
-    borderRadius: 12,
-    color: "black",
-    backgroundColor: "#F6F6F6",
-  },
   icon: {
     top: -35,
     left: 150,
@@ -104,4 +113,35 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 });
+
+const input = {
+  marginRight: 16,
+  marginLeft: 16,
+  marginBottom: 0,
+  marginTop: 16,
+  borderWidth: 1,
+  padding: 16,
+  width: 343,
+  height: 50,
+  borderColor: "#E8E8E8",
+  borderRadius: 12,
+  color: "black",
+  backgroundColor: "#F6F6F6",
+};
+
+const inputFocus = {
+  marginRight: 16,
+  marginLeft: 16,
+  marginBottom: 0,
+  marginTop: 16,
+  borderWidth: 1,
+  padding: 16,
+  width: 343,
+  height: 50,
+  borderColor: "#FF6C00",
+  borderRadius: 12,
+  color: "black",
+  backgroundColor: "#ffffff",
+};
+
 export default LoginScreen;

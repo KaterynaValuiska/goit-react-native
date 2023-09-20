@@ -13,9 +13,9 @@ export default function App() {
         resizeMode="cover"
         style={{ width: "100%", height: "100%" }}
       >
-        {/* <LoginScreen /> */}
+        <LoginScreen />
         {/* <RegistrationScreen /> */}
-        <PostsScreen />
+        {/* <PostsScreen /> */}
       </ImageBackground>
       <StatusBar style="auto" />
     </View>
