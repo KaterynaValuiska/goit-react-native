@@ -7,15 +7,21 @@ import {
   Pressable,
   TouchableWithoutFeedback,
   Keyboard,
+  ImageBackground,
+  StatusBar,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import image from "../Images/PhotoBG.png";
+
 function RegistrationScreen() {
+  const navigation = useNavigation();
   const [name, setName] = useState("");
-  const [nameFocus, setNameFocus] = useState(true);
+  const [nameFocus, setNameFocus] = useState(false);
   const [email, setEmail] = useState("");
-  const [emailFocus, setEmailFocus] = useState(true);
+  const [emailFocus, setEmailFocus] = useState(false);
   const [password, setPassword] = useState("");
-  const [passwordFocus, setPasswordFocus] = useState(true);
+  const [passwordFocus, setPasswordFocus] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -27,77 +33,100 @@ function RegistrationScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View
-        style={{
-          ...styles.container,
-          top: nameFocus || emailFocus || passwordFocus ? 143 : 263,
-        }}
-      >
-        <View style={styles.photoBlok}>
-          <MaterialCommunityIcons
-            name={"plus-circle-outline"}
-            style={styles.buttonX}
-            size={25}
-            color="#FF6C00"
-            onPress={toggleShowPassword}
-          />
-        </View>
-        <Text style={styles.title}>Registration</Text>
+      <View style={styles.containerMain}>
+        <ImageBackground
+          source={image}
+          resizeMode="cover"
+          style={{ width: "100%", height: "100%" }}
+        >
+          <View
+            style={{
+              ...styles.container,
+              top: nameFocus || emailFocus || passwordFocus ? 103 : 223,
+            }}
+          >
+            <View style={styles.photoBlok}>
+              <MaterialCommunityIcons
+                name={"plus-circle-outline"}
+                style={styles.buttonX}
+                size={25}
+                color="#FF6C00"
+                onPress={toggleShowPassword}
+              />
+            </View>
+            <Text style={styles.title}>Registration</Text>
 
-        <TextInput
-          style={!nameFocus ? input : inputFocus}
-          placeholder="Login"
-          type="text"
-          value={name}
-          placeholderTextColor="#aaa"
-          onChangeText={setName}
-          onFocus={() => setNameFocus(true)}
-          onBlur={() => setNameFocus(false)}
-        />
-        <TextInput
-          style={!emailFocus ? input : inputFocus}
-          placeholder="email"
-          type="email"
-          value={email}
-          placeholderTextColor="#aaa"
-          onChangeText={setEmail}
-          onFocus={() => setEmailFocus(true)}
-          onBlur={() => setEmailFocus(false)}
-        />
-        <TextInput
-          style={!passwordFocus ? input : inputFocus}
-          placeholder="password"
-          type="password"
-          placeholderTextColor="#aaa"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-          onFocus={() => setPasswordFocus(true)}
-          onBlur={() => setPasswordFocus(false)}
-        />
+            <TextInput
+              style={!nameFocus ? input : inputFocus}
+              placeholder="Login"
+              type="text"
+              value={name}
+              placeholderTextColor="#aaa"
+              onChangeText={setName}
+              onFocus={() => setNameFocus(true)}
+              onBlur={() => setNameFocus(false)}
+            />
+            <TextInput
+              style={!emailFocus ? input : inputFocus}
+              placeholder="email"
+              type="email"
+              value={email}
+              placeholderTextColor="#aaa"
+              onChangeText={setEmail}
+              onFocus={() => setEmailFocus(true)}
+              onBlur={() => setEmailFocus(false)}
+            />
+            <TextInput
+              style={!passwordFocus ? input : inputFocus}
+              placeholder="password"
+              type="password"
+              placeholderTextColor="#aaa"
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={setPassword}
+              onFocus={() => setPasswordFocus(true)}
+              onBlur={() => setPasswordFocus(false)}
+            />
 
-        <MaterialCommunityIcons
-          name={!showPassword ? "eye-off" : "eye"}
-          size={24}
-          color="#aaa"
-          style={styles.icon}
-          onPress={toggleShowPassword}
-        />
-        <Pressable style={styles.button} onPress={signUp}>
-          <Text style={styles.text}>Sign up</Text>
-        </Pressable>
+            <MaterialCommunityIcons
+              name={!showPassword ? "eye-off" : "eye"}
+              size={24}
+              color="#aaa"
+              style={styles.icon}
+              onPress={toggleShowPassword}
+            />
+            <Pressable style={styles.button} onPress={signUp}>
+              <Text style={styles.text}>Sign up</Text>
+            </Pressable>
 
-        <Text style={styles.textSignUp}>Do you have an account? Sign in</Text>
+            <Text
+              style={styles.textSignUp}
+              onPress={() => navigation.navigate("Login")}
+            >
+              Do you have an account? Sign in
+            </Text>
+          </View>
+        </ImageBackground>
+        <StatusBar style="auto" />
       </View>
     </TouchableWithoutFeedback>
   );
 }
 const styles = StyleSheet.create({
+  containerMain: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  image: {
+    flex: 1,
+    justifyContent: "center",
+  },
   container: {
     flex: 1,
     width: "100%",
     height: 549,
-    paddingTop: 100,
+    paddingTop: 90,
     backgroundColor: "white",
     borderTopStartRadius: 25,
     borderTopEndRadius: 25,

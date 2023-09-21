@@ -6,14 +6,19 @@ import {
   Pressable,
   TouchableWithoutFeedback,
   Keyboard,
+  ImageBackground,
+  StatusBar,
 } from "react-native";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import image from "../Images/PhotoBG.png";
 function LoginScreen() {
+  const navigation = useNavigation();
   const [email, setEmail] = useState("");
-  const [emailFocus, setEmailFocus] = useState(true);
+  const [emailFocus, setEmailFocus] = useState(false);
   const [password, setPassword] = useState("");
-  const [passwordFocus, setPasswordFocus] = useState(true);
+  const [passwordFocus, setPasswordFocus] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -25,51 +30,74 @@ function LoginScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View
-        style={{
-          ...styles.container,
-          top: emailFocus || passwordFocus ? 273 : 323,
-        }}
-      >
-        <Text style={styles.title}>Sign in</Text>
-        <TextInput
-          style={!emailFocus ? input : inputFocus}
-          placeholder="email"
-          type="email"
-          value={email}
-          placeholderTextColor="#aaa"
-          onChangeText={setEmail}
-          onFocus={() => setEmailFocus(true)}
-          onBlur={() => setEmailFocus(false)}
-        />
-        <TextInput
-          style={!passwordFocus ? input : inputFocus}
-          placeholder="password"
-          type="password"
-          placeholderTextColor="#aaa"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-          onFocus={() => setPasswordFocus(true)}
-          onBlur={() => setPasswordFocus(false)}
-        />
-        <MaterialCommunityIcons
-          name={showPassword ? "eye-off" : "eye"}
-          size={24}
-          color="#aaa"
-          style={styles.icon}
-          onPress={toggleShowPassword}
-        />
-        <Pressable style={styles.button} onPress={signUp}>
-          <Text style={styles.text}>Sign in</Text>
-        </Pressable>
-        <Text style={styles.textSignUp}>Don't have an account? Sign up</Text>
+      <View style={styles.containerMain}>
+        <ImageBackground
+          source={image}
+          resizeMode="cover"
+          style={{ width: "100%", height: "100%" }}
+        >
+          <View
+            style={{
+              ...styles.container,
+              top: emailFocus || passwordFocus ? 273 : 323,
+            }}
+          >
+            <Text style={styles.title}>Sign in</Text>
+            <TextInput
+              style={!emailFocus ? input : inputFocus}
+              placeholder="email"
+              type="email"
+              value={email}
+              placeholderTextColor="#aaa"
+              onChangeText={setEmail}
+              onFocus={() => setEmailFocus(true)}
+              onBlur={() => setEmailFocus(false)}
+            />
+            <TextInput
+              style={!passwordFocus ? input : inputFocus}
+              placeholder="password"
+              type="password"
+              placeholderTextColor="#aaa"
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={setPassword}
+              onFocus={() => setPasswordFocus(true)}
+              onBlur={() => setPasswordFocus(false)}
+            />
+            <MaterialCommunityIcons
+              name={!showPassword ? "eye-off" : "eye"}
+              size={24}
+              color="#aaa"
+              style={styles.icon}
+              onPress={toggleShowPassword}
+            />
+            <Pressable style={styles.button} onPress={signUp}>
+              <Text style={styles.text}>Sign in</Text>
+            </Pressable>
+            <Text
+              style={styles.textSignUp}
+              onPress={() => navigation.navigate("Registration")}
+            >
+              Don't have an account? Sign up
+            </Text>
+          </View>
+        </ImageBackground>
+        <StatusBar style="auto" />
       </View>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
+  containerMain: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  image: {
+    flex: 1,
+    justifyContent: "center",
+  },
   container: {
     width: "100%",
     height: 549,
