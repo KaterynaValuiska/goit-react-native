@@ -1,8 +1,15 @@
-import { Button, StyleSheet, Text, View, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 function PostsScreen() {
+  const navigation = useNavigation();
+  const {
+    params: { name, email },
+  } = useRoute();
+
   return (
-    <View style={styles.continer}>
+    <SafeAreaView style={styles.continer}>
       <View style={styles.continerHeader}>
         <Text style={styles.title}>Publications</Text>
         <MaterialCommunityIcons
@@ -14,7 +21,11 @@ function PostsScreen() {
       </View>
       <View style={styles.continerContent}>
         <View style={styles.userPhoto}></View>
-        <Text style={styles.userData}>User name{"\n"}example@mail</Text>
+        <Text style={styles.userData}>
+          {name}
+          {"\n"}
+          {email}
+        </Text>
       </View>
       <View style={styles.continerFooter}>
         <MaterialCommunityIcons
@@ -22,7 +33,10 @@ function PostsScreen() {
           size={25}
           color="#aaa"
         />
-        <Pressable style={styles.button} onPress={() => console.debug("+")}>
+        <Pressable
+          style={styles.button}
+          onPress={() => navigation.navigate("Create")}
+        >
           <Text style={styles.text}>+</Text>
         </Pressable>
         <MaterialCommunityIcons
@@ -31,7 +45,7 @@ function PostsScreen() {
           color="#aaa"
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -41,14 +55,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    paddingStart: 150,
-    paddingTop: 20,
+    paddingStart: 120,
+    paddingTop: 10,
   },
   continerHeader: {
     flex: 1,
     flexDirection: "row",
-    paddingTop: 44,
-    gap: 80,
+    gap: 90,
     borderBottomColor: "#E8E8E8",
     borderBottomWidth: 1,
   },
@@ -94,7 +107,7 @@ const styles = StyleSheet.create({
     marginTop: 48,
   },
   iconHeader: {
-    paddingTop: 20,
+    paddingTop: 10,
   },
 });
 

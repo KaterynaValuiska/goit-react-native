@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
+  SafeAreaView,
   TextInput,
   Pressable,
   TouchableWithoutFeedback,
@@ -29,11 +30,16 @@ function RegistrationScreen() {
   const signUp = () => {
     console.debug("Welcome!");
     console.debug(`${name}, ${email}, ${password}`);
+    navigation.navigate("Login", {
+      name: name,
+      email: email,
+      password: password,
+    });
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.containerMain}>
+      <SafeAreaView style={styles.containerMain}>
         <ImageBackground
           source={image}
           resizeMode="cover"
@@ -98,17 +104,24 @@ function RegistrationScreen() {
             <Pressable style={styles.button} onPress={signUp}>
               <Text style={styles.text}>Sign up</Text>
             </Pressable>
-
-            <Text
-              style={styles.textSignUp}
-              onPress={() => navigation.navigate("Login")}
-            >
-              Do you have an account? Sign in
-            </Text>
+            <View style={styles.containerText}>
+              <Text>Do you have an account? </Text>
+              <Text
+                style={styles.textSignUp}
+                onPress={() =>
+                  navigation.navigate("Login", {
+                    email: { email },
+                    password: { password },
+                  })
+                }
+              >
+                Sign in
+              </Text>
+            </View>
           </View>
         </ImageBackground>
         <StatusBar style="auto" />
-      </View>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }
@@ -174,6 +187,12 @@ const styles = StyleSheet.create({
     color: "white",
   },
   textSignUp: {
+    textDecorationLine: "underline",
+  },
+  containerText: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 4,
     textAlign: "center",
     marginTop: 16,
     marginBottom: 30,

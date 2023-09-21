@@ -2,6 +2,7 @@ import {
   StyleSheet,
   Text,
   View,
+  SafeAreaView,
   TextInput,
   Pressable,
   TouchableWithoutFeedback,
@@ -10,14 +11,17 @@ import {
   StatusBar,
 } from "react-native";
 import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import image from "../Images/PhotoBG.png";
 function LoginScreen() {
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
+  const {
+    params: { name, email, password },
+  } = useRoute();
+  // const [email, setEmail] = useState("");
   const [emailFocus, setEmailFocus] = useState(false);
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => {
@@ -26,11 +30,15 @@ function LoginScreen() {
   const signUp = () => {
     console.debug("Welcome!");
     console.debug(`${email}, ${password}`);
+    navigation.navigate("Home", {
+      name: name,
+      email: email,
+    });
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.containerMain}>
+      <SafeAreaView style={styles.containerMain}>
         <ImageBackground
           source={image}
           resizeMode="cover"
@@ -49,7 +57,7 @@ function LoginScreen() {
               type="email"
               value={email}
               placeholderTextColor="#aaa"
-              onChangeText={setEmail}
+              // onChangeText={email}
               onFocus={() => setEmailFocus(true)}
               onBlur={() => setEmailFocus(false)}
             />
@@ -60,7 +68,7 @@ function LoginScreen() {
               placeholderTextColor="#aaa"
               secureTextEntry={!showPassword}
               value={password}
-              onChangeText={setPassword}
+              // onChangeText={password}
               onFocus={() => setPasswordFocus(true)}
               onBlur={() => setPasswordFocus(false)}
             />
@@ -74,16 +82,19 @@ function LoginScreen() {
             <Pressable style={styles.button} onPress={signUp}>
               <Text style={styles.text}>Sign in</Text>
             </Pressable>
-            <Text
-              style={styles.textSignUp}
-              onPress={() => navigation.navigate("Registration")}
-            >
-              Don't have an account? Sign up
-            </Text>
+            <View style={styles.containerText}>
+              <Text>Don't have an account?</Text>
+              <Text
+                style={styles.textSignUp}
+                onPress={() => navigation.navigate("Registration")}
+              >
+                Sign up
+              </Text>
+            </View>
           </View>
         </ImageBackground>
         <StatusBar style="auto" />
-      </View>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }
@@ -136,6 +147,12 @@ const styles = StyleSheet.create({
     color: "white",
   },
   textSignUp: {
+    textDecorationLine: "underline",
+  },
+  containerText: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 4,
     textAlign: "center",
     marginTop: 16,
     marginBottom: 30,
