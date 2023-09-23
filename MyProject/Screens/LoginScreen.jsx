@@ -19,9 +19,7 @@ function LoginScreen() {
   const {
     params: { name, email, password },
   } = useRoute();
-  // const [email, setEmail] = useState("");
   const [emailFocus, setEmailFocus] = useState(false);
-  // const [password, setPassword] = useState("");
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => {

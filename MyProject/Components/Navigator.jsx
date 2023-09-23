@@ -1,6 +1,6 @@
 import React from "react";
 import "react-native-gesture-handler";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { Text, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -38,6 +38,7 @@ const TabNav = () => {
         },
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarActiveTintColor: "#e91e63",
       })}
     >
       <Tab.Screen
@@ -57,11 +58,24 @@ const TabNav = () => {
         name="Create"
         component={CreatePostsScreen}
         options={{
-          tabBarButton: () => (
-            <Pressable style={styles.button}>
-              <Text style={styles.text}>+</Text>
-            </Pressable>
+          tabBarIcon: () => (
+            <MaterialCommunityIcons
+              name={"plus-thick"}
+              size={20}
+              color="white"
+            />
           ),
+          tabBarIconStyle: {
+            backgroundColor: "#FF6C00",
+            borderRadius: 100,
+            elevation: 3,
+            width: 70,
+            height: 35,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 5,
+            marginBottom: 5,
+          },
         }}
       />
       <Tab.Screen
@@ -80,21 +94,3 @@ const TabNav = () => {
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#FF6C00",
-    borderRadius: 100,
-    elevation: 3,
-    width: 70,
-    height: 35,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  text: {
-    color: "white",
-    fontSize: 35,
-    top: -6,
-  },
-});

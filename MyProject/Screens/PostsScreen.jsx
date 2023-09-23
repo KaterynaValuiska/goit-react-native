@@ -10,10 +10,11 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 function PostsScreen() {
+  const navigation = useNavigation();
   // const {
   //   params: { name, email },
   // } = useRoute();
-  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.continer}>
       <View style={styles.continerHeader}>
