@@ -7,13 +7,19 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  TouchableOpacity,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 function CreatePostsScreen() {
+  const navigation = useNavigation();
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.continer}>
         <View style={styles.continerHeader}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <MaterialCommunityIcons name={"keyboard-backspace"} size={25} />
+          </TouchableOpacity>
           <Text style={styles.title}>Create a publication</Text>
         </View>
         <View style={styles.continerContent}>
@@ -74,16 +80,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    paddingTop: 10,
   },
   continerHeader: {
     flex: 1,
     flexDirection: "row",
-    gap: 90,
+    gap: 55,
     borderBottomColor: "#E8E8E8",
     borderBottomWidth: 1,
     alignItems: "center",
-    justifyContent: "center",
+    marginTop: 30,
+    marginLeft: 16,
   },
   continerContent: {
     flex: 15,

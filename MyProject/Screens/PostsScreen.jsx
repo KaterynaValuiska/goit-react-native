@@ -1,49 +1,39 @@
-import { SafeAreaView, StyleSheet, Text, View, Pressable } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
+// import { useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 function PostsScreen() {
+  // const {
+  //   params: { name, email },
+  // } = useRoute();
   const navigation = useNavigation();
-  const {
-    params: { name, email },
-  } = useRoute();
-
   return (
     <SafeAreaView style={styles.continer}>
       <View style={styles.continerHeader}>
         <Text style={styles.title}>Publications</Text>
-        <MaterialCommunityIcons
-          name={"export"}
-          size={25}
-          color="#aaa"
-          style={styles.iconHeader}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
+          <MaterialCommunityIcons
+            name={"export"}
+            size={25}
+            color="#aaa"
+            style={styles.iconHeader}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.continerContent}>
         <View style={styles.userPhoto}></View>
         <Text style={styles.userData}>
-          {name}
+          User
           {"\n"}
-          {email}
+          example@mail
         </Text>
-      </View>
-      <View style={styles.continerFooter}>
-        <MaterialCommunityIcons
-          name={"view-grid-outline"}
-          size={25}
-          color="#aaa"
-        />
-        <Pressable
-          style={styles.button}
-          onPress={() => navigation.navigate("Create")}
-        >
-          <Text style={styles.text}>+</Text>
-        </Pressable>
-        <MaterialCommunityIcons
-          name={"account-outline"}
-          size={30}
-          color="#aaa"
-        />
       </View>
     </SafeAreaView>
   );
@@ -64,34 +54,13 @@ const styles = StyleSheet.create({
     gap: 90,
     borderBottomColor: "#E8E8E8",
     borderBottomWidth: 1,
+    alignItems: "center",
+    paddingTop: 12,
   },
   continerContent: {
     flex: 10,
     flexDirection: "row",
     gap: 8,
-  },
-  continerFooter: {
-    flex: 1,
-    flexDirection: "row",
-    borderTopColor: "#E8E8E8",
-    borderTopWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 31,
-  },
-  button: {
-    backgroundColor: "#FF6C00",
-    borderRadius: 100,
-    elevation: 3,
-    width: 70,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    color: "white",
-    fontSize: 35,
-    top: -4,
   },
   userPhoto: {
     width: 60,
