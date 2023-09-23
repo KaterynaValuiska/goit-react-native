@@ -9,6 +9,7 @@ import LoginScreen from "../Screens/LoginScreen";
 import PostsScreen from "../Screens/PostsScreen";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
+import CommentsScreen from "../Screens/CommentsScreen";
 
 const MainStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -25,6 +26,7 @@ export default function Navigator() {
       <MainStack.Screen name="Registration" component={RegistrationScreen} />
       <MainStack.Screen name="Login" component={LoginScreen} />
       <MainStack.Screen name="Home" component={PostsScreen} />
+      <MainStack.Screen name="Comment" component={CommentsScreen} />
     </MainStack.Navigator>
   );
 }

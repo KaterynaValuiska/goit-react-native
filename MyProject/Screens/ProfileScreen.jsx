@@ -9,9 +9,10 @@ import {
 import image from "../Images/PhotoBG.png";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-
+import { useState } from "react";
 function ProfileScreen() {
   const navigation = useNavigation();
+  const [count, setCount] = useState(0);
   return (
     <SafeAreaView style={styles.containerMain}>
       <ImageBackground
@@ -34,22 +35,28 @@ function ProfileScreen() {
           <Text style={styles.namePhoto}>Name photo</Text>
           <View style={styles.continerCommentMain}>
             <View style={styles.continerComment}>
-              <View style={styles.comment}>
+              <TouchableOpacity
+                style={styles.comment}
+                onPress={() => navigation.navigate("Comment")}
+              >
                 <MaterialCommunityIcons
                   name={"comment"}
                   size={25}
                   color="#FF6C00"
                 />
                 <Text>0</Text>
-              </View>
-              <View style={styles.comment}>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.comment}
+                onPress={() => setCount(count + 1)}
+              >
                 <MaterialCommunityIcons
                   name={"thumb-up-outline"}
                   size={25}
                   color="#FF6C00"
                 />
-                <Text>0</Text>
-              </View>
+                <Text>{count}</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.mapMarkerName}>
               <MaterialCommunityIcons
