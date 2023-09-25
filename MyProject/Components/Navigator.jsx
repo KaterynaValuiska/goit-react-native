@@ -1,6 +1,5 @@
 import React from "react";
 import "react-native-gesture-handler";
-import { Text, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -25,7 +24,7 @@ export default function Navigator() {
       <MainStack.Screen name={"Tab"} component={TabNav} />
       <MainStack.Screen name="Registration" component={RegistrationScreen} />
       <MainStack.Screen name="Login" component={LoginScreen} />
-      <MainStack.Screen name="Home" component={PostsScreen} />
+      {/* <MainStack.Screen name="Home" component={PostsScreen} /> */}
       <MainStack.Screen name="Comment" component={CommentsScreen} />
     </MainStack.Navigator>
   );
@@ -42,6 +41,7 @@ const TabNav = () => {
         tabBarShowLabel: false,
         tabBarActiveTintColor: "#e91e63",
       })}
+      initialRouteName="Home"
     >
       <Tab.Screen
         name="Home"

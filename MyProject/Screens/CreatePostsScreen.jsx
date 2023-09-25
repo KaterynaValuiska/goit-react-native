@@ -11,8 +11,31 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useRef } from "react";
+import { Camera } from "expo-camera";
+import * as MediaLibrary from "expo-media-library";
+
 function CreatePostsScreen() {
   const navigation = useNavigation();
+  const [hasPermission, setHasPermission] = useState(null);
+  const [cameraRef, setCameraRef] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.continer}>
@@ -24,7 +47,47 @@ function CreatePostsScreen() {
         </View>
         <View style={styles.continerContent}>
           <View style={styles.continerPhoto}>
-            <Pressable
+            <Camera style={styles.camera} type={type} ref={setCameraRef}>
+              <View style={styles.photoView}>
+                <TouchableOpacity
+                  style={styles.flipContainer}
+                  onPress={() => {
+                    setType(
+                      type === Camera.Constants.Type.back
+                        ? Camera.Constants.Type.front
+                        : Camera.Constants.Type.back
+                    );
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name={"camera-retake"}
+                    size={25}
+                    color="#fff"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.buttonTakePhoto}
+                  onPress={async () => {
+                    if (cameraRef) {
+                      const { uri } = await cameraRef.takePictureAsync();
+                      await MediaLibrary.createAssetAsync(uri);
+                    }
+                  }}
+                >
+                  <View style={styles.takePhotoOut}>
+                    <View style={styles.takePhotoInner}>
+                      <MaterialCommunityIcons
+                        name={"camera"}
+                        size={25}
+                        color="#fff"
+                        // style={styles.iconPhote}
+                      />
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </Camera>
+            {/* <Pressable
               style={styles.buttonLoadPhote}
               onPress={() => console.debug("+")}
             >
@@ -34,7 +97,7 @@ function CreatePostsScreen() {
                 color="#aaa"
                 //   style={styles.iconPhote}
               />
-            </Pressable>
+            </Pressable> */}
           </View>
           <Text style={styles.textLoadPhote}>Upload a photo</Text>
           {/* map-marker-outline */}
@@ -153,6 +216,21 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginTop: 100,
     marginLeft: 135,
+  },
+  flipContainer: {
+    margin: 5,
+  },
+  camera: {
+    width: "100%",
+    height: "100%",
+  },
+  photoView: {
+    width: "100%",
+    height: "100%",
+  },
+  buttonTakePhoto: {
+    marginLeft: 310,
+    marginTop: 170,
   },
 });
 export default CreatePostsScreen;
