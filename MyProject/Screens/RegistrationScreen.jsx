@@ -14,27 +14,31 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import image from "../Images/PhotoBG.png";
+import { useDispatch } from "react-redux";
+import { register } from "../Redux/authOperation";
 
 function RegistrationScreen() {
   const navigation = useNavigation();
-  const [name, setName] = useState("");
+  const dispatch = useDispatch();
   const [nameFocus, setNameFocus] = useState(false);
-  const [email, setEmail] = useState("");
   const [emailFocus, setEmailFocus] = useState(false);
-  const [password, setPassword] = useState("");
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const signUp = () => {
+  const signUp = (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = {
+      name: form.elements.name.value,
+      email: form.elements.email.value,
+      password: form.elements.password.value,
+    };
+    dispatch(register(data));
     console.debug("Welcome!");
-    console.debug(`${name}, ${email}, ${password}`);
-    navigation.navigate("Login", {
-      name: name,
-      email: email,
-      password: password,
-    });
+    console.debug(data);
+    navigation.navigate("Login", { data });
   };
 
   return (
@@ -66,9 +70,8 @@ function RegistrationScreen() {
               style={!nameFocus ? input : inputFocus}
               placeholder="Login"
               type="text"
-              value={name}
+              name="name"
               placeholderTextColor="#aaa"
-              onChangeText={setName}
               onFocus={() => setNameFocus(true)}
               onBlur={() => setNameFocus(false)}
             />
@@ -76,9 +79,8 @@ function RegistrationScreen() {
               style={!emailFocus ? input : inputFocus}
               placeholder="email"
               type="email"
-              value={email}
+              name="email"
               placeholderTextColor="#aaa"
-              onChangeText={setEmail}
               onFocus={() => setEmailFocus(true)}
               onBlur={() => setEmailFocus(false)}
             />
@@ -88,8 +90,7 @@ function RegistrationScreen() {
               type="password"
               placeholderTextColor="#aaa"
               secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={setPassword}
+              name="password"
               onFocus={() => setPasswordFocus(true)}
               onBlur={() => setPasswordFocus(false)}
             />
@@ -110,8 +111,8 @@ function RegistrationScreen() {
                 style={styles.textSignUp}
                 onPress={() =>
                   navigation.navigate("Login", {
-                    email: { email },
-                    password: { password },
+                    email: form.elements.email.value,
+                    password: form.elements.password.value,
                   })
                 }
               >

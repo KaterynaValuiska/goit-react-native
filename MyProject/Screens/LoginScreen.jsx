@@ -14,8 +14,13 @@ import { useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import image from "../Images/PhotoBG.png";
+import { useDispatch } from "react-redux";
+import { logIn } from "../Redux/authOperation";
+
 function LoginScreen() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const {
     params: { name, email, password },
   } = useRoute();
@@ -25,7 +30,9 @@ function LoginScreen() {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const signUp = () => {
+  const signUp = (e) => {
+    e.preventDefault();
+    dispatch(logIn({ email, password }));
     console.debug("Welcome!");
     console.debug(`${email}, ${password}`);
     navigation.navigate("Home", {
