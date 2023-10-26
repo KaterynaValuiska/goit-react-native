@@ -31,9 +31,9 @@ function RegistrationScreen() {
     e.preventDefault();
     const form = e.currentTarget;
     const data = {
-      name: form.elements.name.value,
       email: form.elements.email.value,
       password: form.elements.password.value,
+      name: form.elements.name.value,
     };
     dispatch(register(data));
     console.debug("Welcome!");
@@ -109,12 +109,7 @@ function RegistrationScreen() {
               <Text>Do you have an account? </Text>
               <Text
                 style={styles.textSignUp}
-                onPress={() =>
-                  navigation.navigate("Login", {
-                    email: form.elements.email.value,
-                    password: form.elements.password.value,
-                  })
-                }
+                onPress={() => navigation.navigate("Login", { data })}
               >
                 Sign in
               </Text>

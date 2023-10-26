@@ -1,69 +1,43 @@
-import axios from "axios";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  updateProfile,
+  signOut,
+} from "firebase/auth";
+import { auth } from "../config";
+import { async } from "@firebase/util";
 
-axios.defaults.baseURL = "https://connections-api.herokuapp.com/";
-
-const setAuthHeader = (token) => {
-  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
-
-const clearAuthHeader = () => {
-  axios.defaults.headers.common.Authorization = "";
-};
-
-export const register = createAsyncThunk(
-  "auth/register",
-  async (credentials, thunkAPI) => {
-    try {
-      const res = await axios.post("/users/signup", credentials);
-      setAuthHeader(res.data.token);
-      return res.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
-export const logIn = createAsyncThunk(
-  "auth/login",
-  async (credentials, thunkAPI) => {
-    try {
-      const res = await axios.post("/users/login", credentials);
-      // After successful login, add the token to the HTTP header
-      setAuthHeader(res.data.token);
-      return res.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
-export const logOut = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
+export const register = async ({ email, password, name }) => {
   try {
-    await axios.post("/users/logout");
-    // After a successful logout, remove the token from the HTTP header
-    clearAuthHeader();
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(res.user, { name });
+    console.log(auth.currentUser);
+    return auth.currentUser;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.message);
+    throw new Error(error.message);
   }
-});
-
-export const refreshUser = createAsyncThunk(
-  "auth/refresh",
-  async (_, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const persistedToken = state.auth.token;
-
-    if (persistedToken === null) {
-      return thunkAPI.rejectWithValue("Unable to fetch user");
-    }
-
-    try {
-      setAuthHeader(persistedToken);
-      const res = await axios.get("/users/current");
-      return res.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
+};
+export const logIn = async ({ email, password }) => {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    return auth.currentUser;
+  } catch (error) {
+    throw new Error(error.message);
   }
-);
+};
+
+export const logOut = async () => {
+  try {
+    await signOut(auth);
+    return auth.currentUser;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const refreshUser = async (onChange = () => {}) => {
+  onAuthStateChanged((user) => {
+    onChange(user);
+  });
+};
