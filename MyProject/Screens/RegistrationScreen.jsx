@@ -20,24 +20,25 @@ import { register } from "../Redux/authOperation";
 function RegistrationScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [name, setName] = useState("");
   const [nameFocus, setNameFocus] = useState(false);
+  const [email, setEmail] = useState("");
   const [emailFocus, setEmailFocus] = useState(false);
+  const [password, setPassword] = useState("");
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const signUp = (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
+  const signUp = () => {
     const data = {
-      email: form.elements.email.value,
-      password: form.elements.password.value,
-      name: form.elements.name.value,
+      name,
+      email,
+      password,
     };
-    dispatch(register(data));
     console.debug("Welcome!");
     console.debug(data);
+    dispatch(register(data));
     navigation.navigate("Login", { data });
   };
 
@@ -69,7 +70,8 @@ function RegistrationScreen() {
             <TextInput
               style={!nameFocus ? input : inputFocus}
               placeholder="Login"
-              type="text"
+              value={name}
+              onChangeText={setName}
               name="name"
               placeholderTextColor="#aaa"
               onFocus={() => setNameFocus(true)}
@@ -78,7 +80,8 @@ function RegistrationScreen() {
             <TextInput
               style={!emailFocus ? input : inputFocus}
               placeholder="email"
-              type="email"
+              value={email}
+              onChangeText={setEmail}
               name="email"
               placeholderTextColor="#aaa"
               onFocus={() => setEmailFocus(true)}
@@ -90,6 +93,8 @@ function RegistrationScreen() {
               type="password"
               placeholderTextColor="#aaa"
               secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={setPassword}
               name="password"
               onFocus={() => setPasswordFocus(true)}
               onBlur={() => setPasswordFocus(false)}

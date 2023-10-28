@@ -30,9 +30,8 @@ function LoginScreen() {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const signUp = (e) => {
-    e.preventDefault();
-    dispatch(logIn({ email, password }));
+  const signUp = () => {
+    // dispatch(logIn({ email, password }));
     console.debug("Welcome!");
     console.debug(`${email}, ${password}`);
     navigation.navigate("Home", {

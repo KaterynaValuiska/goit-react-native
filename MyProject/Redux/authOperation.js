@@ -36,8 +36,8 @@ export const logOut = async () => {
   }
 };
 
-export const refreshUser = async (onChange = () => {}) => {
-  onAuthStateChanged((user) => {
-    onChange(user);
-  });
-};
+// export const refreshUser = (onChange = () => {}) => {
+//    onAuthStateChanged((user) => {
+//     onChange(user);
+//   });
+// };
