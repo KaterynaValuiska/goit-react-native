@@ -40,7 +40,7 @@ function LoginScreen() {
         password,
       });
       console.debug(`login ${email}, ${password}`);
-      dispatch(loginUser({ email: user.email, name: user.displayName }));
+      dispatch(loginUser({ email: user.email }));
       console.log(isLoggedIn);
       if (isLoggedIn) {
         navigation.navigate("Home");

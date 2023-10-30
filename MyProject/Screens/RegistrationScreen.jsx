@@ -16,6 +16,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import image from "../Images/PhotoBG.png";
 import { useDispatch } from "react-redux";
 import { register } from "../Redux/authOperation";
+import { loginUser } from "../Redux/authSlice";
 
 function RegistrationScreen() {
   const navigation = useNavigation();
@@ -38,7 +39,8 @@ function RegistrationScreen() {
     };
     console.debug("Welcome!");
     console.debug(data);
-    dispatch(register(data));
+    const user = register(data);
+    dispatch(loginUser({ email: user.email, name: user.name }));
     navigation.navigate("Login");
     // setName("");
     // setEmail("");
