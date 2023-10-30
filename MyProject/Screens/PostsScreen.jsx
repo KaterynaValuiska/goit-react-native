@@ -8,9 +8,11 @@ import {
 import { useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 function PostsScreen() {
   const navigation = useNavigation();
+  const { email, name } = useSelector((state) => state.auth);
   // const {
   //   params: { name, email },
   // } = useRoute();
@@ -31,7 +33,7 @@ function PostsScreen() {
       <View style={styles.continerContent}>
         <View style={styles.userPhoto}></View>
         <Text style={styles.userData}>
-          User
+          {name}
           {"\n"}
           example@mail
         </Text>

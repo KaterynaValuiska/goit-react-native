@@ -39,7 +39,10 @@ function RegistrationScreen() {
     console.debug("Welcome!");
     console.debug(data);
     dispatch(register(data));
-    navigation.navigate("Login", { data });
+    navigation.navigate("Login");
+    // setName("");
+    // setEmail("");
+    // setPassword("");
   };
 
   return (
@@ -114,7 +117,7 @@ function RegistrationScreen() {
               <Text>Do you have an account? </Text>
               <Text
                 style={styles.textSignUp}
-                onPress={() => navigation.navigate("Login", { data })}
+                onPress={() => navigation.navigate("Login")}
               >
                 Sign in
               </Text>

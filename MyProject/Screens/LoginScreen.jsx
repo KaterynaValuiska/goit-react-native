@@ -14,30 +14,40 @@ import { useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import image from "../Images/PhotoBG.png";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logIn } from "../Redux/authOperation";
+import { loginUser } from "../Redux/authSlice";
 
 function LoginScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
-  const {
-    params: { name, email, password },
-  } = useRoute();
+  // const {
+  //   params: { name, email, password },
+  // } = useRoute();
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const [email, setEmail] = useState("");
   const [emailFocus, setEmailFocus] = useState(false);
+  const [password, setPassword] = useState("");
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
   const signUp = () => {
-    // dispatch(logIn({ email, password }));
-    console.debug("Welcome!");
-    console.debug(`${email}, ${password}`);
-    navigation.navigate("Home", {
-      name: name,
-      email: email,
-    });
+    try {
+      const user = logIn({
+        email,
+        password,
+      });
+      console.debug(`login ${email}, ${password}`);
+      dispatch(loginUser({ email: user.email, name: user.displayName }));
+      console.log(isLoggedIn);
+      if (isLoggedIn) {
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -61,7 +71,7 @@ function LoginScreen() {
               type="email"
               value={email}
               placeholderTextColor="#aaa"
-              // onChangeText={email}
+              onChangeText={setEmail}
               onFocus={() => setEmailFocus(true)}
               onBlur={() => setEmailFocus(false)}
             />
@@ -72,7 +82,7 @@ function LoginScreen() {
               placeholderTextColor="#aaa"
               secureTextEntry={!showPassword}
               value={password}
-              // onChangeText={password}
+              onChangeText={setPassword}
               onFocus={() => setPasswordFocus(true)}
               onBlur={() => setPasswordFocus(false)}
             />
