@@ -8,22 +8,31 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
+import { useDispatch, useSelector } from "react-redux";
+import { addPost } from "../Redux/firestore";
 
 function CreatePostsScreen() {
   const navigation = useNavigation();
+  const { userId } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [photo, setPhoto] = useState(null);
+  const [namePhoto, setNamePhoto] = useState("");
+  const [location, setLocation] = useState("");
+  const [uploadPhoto, setUploadPhoto] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
 
       setHasPermission(status === "granted");
@@ -36,6 +45,19 @@ function CreatePostsScreen() {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
+
+  const publish = () => {
+    const post = { photo, namePhoto, location };
+    console.log(post);
+    console.log(userId);
+    navigation.navigate("Home");
+  };
+  const deletPost = () => {
+    setLocation("");
+    setNamePhoto("");
+    setPhoto("");
+    setUploadPhoto(false);
+  };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.continer}>
@@ -47,46 +69,61 @@ function CreatePostsScreen() {
         </View>
         <View style={styles.continerContent}>
           <View style={styles.continerPhoto}>
-            <Camera style={styles.camera} type={type} ref={setCameraRef}>
-              <View style={styles.photoView}>
-                <TouchableOpacity
-                  style={styles.flipContainer}
-                  onPress={() => {
-                    setType(
-                      type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back
-                    );
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name={"camera-retake"}
-                    size={25}
-                    color="#fff"
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.buttonTakePhoto}
-                  onPress={async () => {
-                    if (cameraRef) {
-                      const { uri } = await cameraRef.takePictureAsync();
-                      await MediaLibrary.createAssetAsync(uri);
-                    }
-                  }}
-                >
-                  <View style={styles.takePhotoOut}>
-                    <View style={styles.takePhotoInner}>
-                      <MaterialCommunityIcons
-                        name={"camera"}
-                        size={25}
-                        color="#fff"
-                        // style={styles.iconPhote}
-                      />
+            {!uploadPhoto && (
+              <Camera style={styles.camera} type={type} ref={setCameraRef}>
+                <View style={styles.photoView}>
+                  <TouchableOpacity
+                    style={styles.flipContainer}
+                    onPress={() => {
+                      setType(
+                        type === Camera.Constants.Type.back
+                          ? Camera.Constants.Type.front
+                          : Camera.Constants.Type.back
+                      );
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name={"camera-retake"}
+                      size={25}
+                      color="#fff"
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.buttonTakePhoto}
+                    onPress={async () => {
+                      if (cameraRef) {
+                        const { uri } = await cameraRef.takePictureAsync();
+                        await MediaLibrary.createAssetAsync(uri);
+                        setPhoto(uri);
+                        console.log(photo);
+                      }
+                    }}
+                  >
+                    <View style={styles.takePhotoOut}>
+                      <View style={styles.takePhotoInner}>
+                        <MaterialCommunityIcons
+                          name={"camera"}
+                          size={25}
+                          color="#fff"
+                          // style={styles.iconPhote}
+                        />
+                      </View>
                     </View>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </Camera>
+                  </TouchableOpacity>
+                </View>
+              </Camera>
+            )}
+            <View>
+              {uploadPhoto && (
+                <Image
+                  style={styles.photoWrapper}
+                  source={{
+                    uri: photo,
+                  }}
+                />
+              )}
+            </View>
+
             {/* <Pressable
               style={styles.buttonLoadPhote}
               onPress={() => console.debug("+")}
@@ -99,35 +136,50 @@ function CreatePostsScreen() {
               />
             </Pressable> */}
           </View>
-          <Text style={styles.textLoadPhote}>Upload a photo</Text>
+          <Text
+            style={!photo ? textLoadPhote : textLoadPhoteActive}
+            onPress={() => setUploadPhoto(true)}
+          >
+            Upload photo
+          </Text>
           {/* map-marker-outline */}
           <TextInput
             style={styles.input}
             placeholder="Name..."
-            //   value={email}
+            value={namePhoto}
+            onChangeText={setNamePhoto}
             placeholderTextColor="#aaa"
           />
           <TextInput
             style={styles.input}
             placeholder="Locality..."
             placeholderTextColor="#aaa"
-            //   value={password}
+            value={location}
+            onChangeText={setLocation}
           />
           <Pressable
-            style={styles.buttonPublish}
-            onPress={() => console.debug("+")}
+            style={
+              photo || location || namePhoto
+                ? buttonPublishActive
+                : buttonPublish
+            }
+            onPress={publish}
           >
-            <Text style={styles.textButtonPublish}>Publish</Text>
+            <Text
+              style={
+                photo || location || namePhoto
+                  ? textButtonPublishActive
+                  : textButtonPublish
+              }
+            >
+              Publish
+            </Text>
           </Pressable>
-          <Pressable
-            style={styles.buttonDelete}
-            onPress={() => console.debug("-")}
-          >
+          <Pressable style={styles.buttonDelete} onPress={deletPost}>
             <MaterialCommunityIcons
               name={"delete"}
               size={25}
-              color="#aaa"
-              // style={styles.iconHeader}
+              color={photo || location || namePhoto ? "#FF6C00" : "#aaa"}
             />
           </Pressable>
         </View>
@@ -163,7 +215,7 @@ const styles = StyleSheet.create({
   continerPhoto: {
     width: 343,
     height: 240,
-    backgroundColor: "#F6F6F6",
+    // backgroundColor: "#F6F6F6",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#E8E8E8",
@@ -178,11 +230,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 50,
   },
-  textLoadPhote: {
-    marginTop: 8,
-    color: "#BDBDBD",
-    marginBottom: 16,
-  },
+  // textLoadPhote: {
+  //   marginTop: 8,
+  //   color: "#BDBDBD",
+  //   marginBottom: 16,
+  // },
   input: {
     width: 343,
     height: 50,
@@ -192,21 +244,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     marginTop: 16,
   },
-  buttonPublish: {
-    marginTop: 43,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    elevation: 3,
-    width: 343,
-    height: 51,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 100,
-  },
-  textButtonPublish: {
-    color: "#BDBDBD",
-  },
+
   buttonDelete: {
     alignItems: "center",
     justifyContent: "center",
@@ -232,5 +270,53 @@ const styles = StyleSheet.create({
     marginLeft: 310,
     marginTop: 170,
   },
+  photoWrapper: {
+    width: 330,
+    height: 230,
+  },
 });
+
+const buttonPublish = {
+  marginTop: 43,
+  alignItems: "center",
+  justifyContent: "center",
+  paddingVertical: 12,
+  paddingHorizontal: 32,
+  elevation: 3,
+  width: 343,
+  height: 51,
+  backgroundColor: "#F6F6F6",
+  borderRadius: 100,
+};
+
+const buttonPublishActive = {
+  marginTop: 43,
+  alignItems: "center",
+  justifyContent: "center",
+  paddingVertical: 12,
+  paddingHorizontal: 32,
+  elevation: 3,
+  width: 343,
+  height: 51,
+  borderRadius: 100,
+  backgroundColor: "#FF6C00",
+};
+
+const textButtonPublish = {
+  color: "#BDBDBD",
+};
+
+const textButtonPublishActive = {
+  color: "#fff",
+};
+const textLoadPhote = {
+  marginTop: 8,
+  color: "#BDBDBD",
+  marginBottom: 16,
+};
+const textLoadPhoteActive = {
+  marginTop: 8,
+  color: "#FF6C00",
+  marginBottom: 16,
+};
 export default CreatePostsScreen;

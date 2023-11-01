@@ -7,7 +7,13 @@ import {
 } from "firebase/auth";
 import { auth } from "../config";
 import { async } from "@firebase/util";
-import { authStateChange, logout, updateUserProfile } from "./authSlice";
+import {
+  authStateChange,
+  loginUser,
+  logout,
+  registerUser,
+  updateUserProfile,
+} from "./authSlice";
 
 export const register =
   ({ email, password, name }) =>
@@ -19,11 +25,13 @@ export const register =
       await updateProfile(user, { displayName: name });
       const userUpdateData = {
         userId: user.uid,
-        name: user.displayName,
+        nameUser: user.displayName,
         email: user.email,
       };
-      console.log(userUpdateData);
-      return userUpdateData;
+      console.log(auth.currentUser);
+      dispatch(registerUser(userUpdateData));
+      // return userUpdateData;
+      return auth.currentUser;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -32,19 +40,20 @@ export const logIn =
   ({ email, password }) =>
   async (dispatch) => {
     try {
-      // await signInWithEmailAndPassword(auth, email, password);
-      // const currentUser = credentials.user;
-      // console.log(currentUser);
-      // const userUpdateData = {
-      //   userId: currentUser.uid,
-      //   name: currentUser.displayName,
-      //   email: currentUser.email,
-      // };
-      // console.log(userUpdateData);
-      // return userUpdateData;
       await signInWithEmailAndPassword(auth, email, password);
-      console.log(auth.currentUser);
-      return auth.currentUser;
+      const currentUser = auth.currentUser;
+      console.log(currentUser);
+      const userUpdateData = {
+        userId: currentUser.uid,
+        name: currentUser.displayName,
+        email: currentUser.email,
+      };
+      console.log(userUpdateData);
+      dispatch(loginUser(userUpdateData));
+      return userUpdateData;
+      // await signInWithEmailAndPassword(auth, email, password);
+      // console.log(auth.currentUser);
+      // return auth.currentUser;
     } catch (error) {
       throw new Error(error.message);
     }

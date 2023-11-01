@@ -19,7 +19,7 @@ function PostsScreen() {
     dispatch(logout());
     // navigation.navigate("Registration");
   };
-  const { email, name } = useSelector((state) => state.auth);
+  const { email, nameUser } = useSelector((state) => state.auth);
   // const {
   //   params: { name, email },
   // } = useRoute();
@@ -40,9 +40,9 @@ function PostsScreen() {
       <View style={styles.continerContent}>
         <View style={styles.userPhoto}></View>
         <Text style={styles.userData}>
-          {name} {email}
+          {nameUser}
           {"\n"}
-          example@mail
+          {email}
         </Text>
       </View>
     </SafeAreaView>

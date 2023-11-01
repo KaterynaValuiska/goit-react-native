@@ -21,10 +21,7 @@ import { loginUser } from "../Redux/authSlice";
 function LoginScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  // const {
-  //   params: { name, email, password },
-  // } = useRoute();
-  const { isLoggedIn, name } = useSelector((state) => state.auth);
+
   const [email, setEmail] = useState("");
   const [emailFocus, setEmailFocus] = useState(false);
   const [password, setPassword] = useState("");
@@ -34,21 +31,18 @@ function LoginScreen() {
     setShowPassword(!showPassword);
   };
   const signUp = () => {
-    try {
-      dispatch(logIn({ email, password }));
-      const user = logIn({ email, password });
-      console.debug(`login ${user}`);
-      dispatch(
-        loginUser({
-          email: user.email,
-          name: user.displayName,
-          uid: user.uid,
-        })
-      );
-      console.log(user.displayName);
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(logIn({ email, password }));
+    // const user = logIn({ email, password });
+    // console.debug(`login ${user}`);
+    // dispatch(
+    //   loginUser({
+    //     email: user.email,
+    //     name: user.displayName,
+    //     uid: user.uid,
+    //   })
+    // );
+    // console.log(user.displayName);
+
     setEmail("");
     setPassword("");
   };

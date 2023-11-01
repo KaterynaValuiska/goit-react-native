@@ -14,9 +14,10 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import image from "../Images/PhotoBG.png";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { register } from "../Redux/authOperation";
-import { loginUser } from "../Redux/authSlice";
+import { registerUser } from "../Redux/authSlice";
+// import { loginUser } from "../Redux/authSlice";
 
 function RegistrationScreen() {
   const navigation = useNavigation();
@@ -40,10 +41,14 @@ function RegistrationScreen() {
     console.debug("Welcome!");
     console.debug(data);
     dispatch(register(data));
-    const user = register(data);
-    dispatch(
-      loginUser({ email: user.email, name: user.name, userId: user.userId })
-    );
+    // const user = register(data);
+    // dispatch(
+    //   registerUser({
+    //     userId: user.userId,
+    //     nameUser: user.nameUser,
+    //     email: user.email,
+    //   })
+    // );
     navigation.navigate("Login");
     setName("");
     setEmail("");

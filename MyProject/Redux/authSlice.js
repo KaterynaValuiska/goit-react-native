@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { register, logIn, logOut, refreshUser } from "./authOperation";
+// import { register, logIn, logOut, refreshUser } from "./authOperation";
 
 const initialState = {
-  userId: "",
-  name: "",
-  email: "",
+  userId: "iii",
+  nameUser: "Test",
+  email: "example@mail",
   avatar: null,
   isLoggedIn: false,
 };
@@ -14,6 +14,13 @@ const authSlice = createSlice({
   initialState,
 
   reducers: {
+    // register: (state, action) => ({ ...state, ...action.payload }),
+    registerUser: {
+      reducer: (state, action) => ({ ...state, ...action.payload }),
+      prepare: (user) => ({
+        payload: { ...user },
+      }),
+    },
     loginUser: {
       reducer: (state, action) => ({ ...state, ...action.payload }),
       prepare: (user) => ({
@@ -27,10 +34,10 @@ const authSlice = createSlice({
     updateUserProfile: (state, action) => action.payload,
   },
   // extraReducers: {
-  //   [register.fulfilled](state, action) {
+  //   register(state, action) {
   //     state.user = action.payload.user;
-  //     state.isLoggedIn = true;
   //   },
+  // },
   //   [register.rejected]() {
   //     alert("Check the entered data");
   //   },
@@ -59,6 +66,11 @@ const authSlice = createSlice({
   //   // },
   // },
 });
-export const { loginUser, logout, authStateChange, updateUserProfile } =
-  authSlice.actions;
+export const {
+  loginUser,
+  logout,
+  authStateChange,
+  updateUserProfile,
+  registerUser,
+} = authSlice.actions;
 export const authReducer = authSlice.reducer;
