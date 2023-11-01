@@ -39,12 +39,15 @@ function RegistrationScreen() {
     };
     console.debug("Welcome!");
     console.debug(data);
+    dispatch(register(data));
     const user = register(data);
-    dispatch(loginUser({ email: user.email, name: user.name }));
+    dispatch(
+      loginUser({ email: user.email, name: user.name, userId: user.userId })
+    );
     navigation.navigate("Login");
-    // setName("");
-    // setEmail("");
-    // setPassword("");
+    setName("");
+    setEmail("");
+    setPassword("");
   };
 
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "react-native-gesture-handler";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -9,11 +9,17 @@ import PostsScreen from "../Screens/PostsScreen";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import CommentsScreen from "../Screens/CommentsScreen";
+import { useSelector } from "react-redux";
+import { authStateChangeUser } from "../Redux/authOperation";
 
 const MainStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function Navigator() {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  useEffect(() => {
+    authStateChangeUser();
+  }, []);
   return (
     <MainStack.Navigator
       screenOptions={{
@@ -21,11 +27,21 @@ export default function Navigator() {
       }}
       initialRouteName="App"
     >
-      <MainStack.Screen name={"Tab"} component={TabNav} />
-      <MainStack.Screen name="Registration" component={RegistrationScreen} />
-      <MainStack.Screen name="Login" component={LoginScreen} />
-      {/* <MainStack.Screen name="Home" component={PostsScreen} /> */}
-      <MainStack.Screen name="Comment" component={CommentsScreen} />
+      {!isLoggedIn ? (
+        <>
+          <MainStack.Screen
+            name="Registration"
+            component={RegistrationScreen}
+          />
+          <MainStack.Screen name="Login" component={LoginScreen} />
+        </>
+      ) : (
+        <>
+          <MainStack.Screen name={"Tab"} component={TabNav} />
+          {/* <MainStack.Screen name="Home" component={PostsScreen} /> */}
+          <MainStack.Screen name="Comment" component={CommentsScreen} />
+        </>
+      )}
     </MainStack.Navigator>
   );
 }

@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../config";
 import { async } from "@firebase/util";
+import { authStateChange, logout, updateUserProfile } from "./authSlice";
 
 export const register =
   ({ email, password, name }) =>
@@ -31,25 +32,43 @@ export const logIn =
   ({ email, password }) =>
   async (dispatch) => {
     try {
-      const credentials = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      return credentials.user;
       // await signInWithEmailAndPassword(auth, email, password);
-      // console.log(auth.currentUser);
-      // return auth.currentUser;
+      // const currentUser = credentials.user;
+      // console.log(currentUser);
+      // const userUpdateData = {
+      //   userId: currentUser.uid,
+      //   name: currentUser.displayName,
+      //   email: currentUser.email,
+      // };
+      // console.log(userUpdateData);
+      // return userUpdateData;
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log(auth.currentUser);
+      return auth.currentUser;
     } catch (error) {
       throw new Error(error.message);
     }
   };
 
+export const authStateChangeUser = () => async (dispatch) => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const userUpdateData = {
+        userId: user.uid,
+        name: user.displayName,
+        email: user.email,
+        avatar: user.photoURL,
+      };
+      dispatch(authStateChange({ stateChange: true }));
+      dispatch(updateUserProfile(userUpdateData));
+    }
+  });
+};
+
 export const logOut = async () => {
   try {
     await signOut(auth);
-    return auth.currentUser;
+    dispatch(logout());
   } catch (error) {
     throw new Error(error.message);
   }

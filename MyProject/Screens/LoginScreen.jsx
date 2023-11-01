@@ -24,7 +24,7 @@ function LoginScreen() {
   // const {
   //   params: { name, email, password },
   // } = useRoute();
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { isLoggedIn, name } = useSelector((state) => state.auth);
   const [email, setEmail] = useState("");
   const [emailFocus, setEmailFocus] = useState(false);
   const [password, setPassword] = useState("");
@@ -35,19 +35,22 @@ function LoginScreen() {
   };
   const signUp = () => {
     try {
-      const user = logIn({
-        email,
-        password,
-      });
-      console.debug(`login ${email}, ${password}`);
-      dispatch(loginUser({ email: user.email }));
-      console.log(isLoggedIn);
-      if (isLoggedIn) {
-        navigation.navigate("Home");
-      }
+      dispatch(logIn({ email, password }));
+      const user = logIn({ email, password });
+      console.debug(`login ${user}`);
+      dispatch(
+        loginUser({
+          email: user.email,
+          name: user.displayName,
+          uid: user.uid,
+        })
+      );
+      console.log(user.displayName);
     } catch (error) {
       console.log(error);
     }
+    setEmail("");
+    setPassword("");
   };
 
   return (

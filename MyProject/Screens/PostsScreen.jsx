@@ -8,10 +8,17 @@ import {
 import { useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../Redux/authSlice";
+import { logOut } from "../Redux/authOperation";
 
 function PostsScreen() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const logOut = () => {
+    dispatch(logout());
+    // navigation.navigate("Registration");
+  };
   const { email, name } = useSelector((state) => state.auth);
   // const {
   //   params: { name, email },
@@ -21,7 +28,7 @@ function PostsScreen() {
     <SafeAreaView style={styles.continer}>
       <View style={styles.continerHeader}>
         <Text style={styles.title}>Publications</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
+        <TouchableOpacity onPress={logOut}>
           <MaterialCommunityIcons
             name={"export"}
             size={25}
@@ -33,7 +40,7 @@ function PostsScreen() {
       <View style={styles.continerContent}>
         <View style={styles.userPhoto}></View>
         <Text style={styles.userData}>
-          {name}
+          {name} {email}
           {"\n"}
           example@mail
         </Text>
