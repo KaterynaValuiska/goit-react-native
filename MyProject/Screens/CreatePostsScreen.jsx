@@ -16,7 +16,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { useDispatch, useSelector } from "react-redux";
-import { addPost } from "../Redux/firestore";
+import { addDoc, collection, setDoc, doc } from "firebase/firestore";
+
+import { db } from "../config";
+// import { addPost } from "../Redux/firestore";
 
 function CreatePostsScreen() {
   const navigation = useNavigation();
@@ -47,9 +50,25 @@ function CreatePostsScreen() {
   }
 
   const publish = () => {
-    const post = { photo, namePhoto, location };
+    // try {
+    const post = { photo, namePhoto, location, userId };
+    // await setDoc(doc(db, "cities", "LA"), {
+    //   name: "Los Angeles",
+    //   state: "CA",
+    //   country: "USA",
+    // });
+
+    const postBD = addDoc(collection(db, "posts"), {
+      ...post,
+      userId,
+    });
     console.log(post);
     console.log(userId);
+    console.log(postBD);
+    // } catch (error) {
+    //   throw new Error("DB Error");
+    // }
+    // dispatch(addPost(userId, post));
     navigation.navigate("Home");
   };
   const deletPost = () => {

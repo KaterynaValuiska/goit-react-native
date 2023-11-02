@@ -38,12 +38,40 @@ function PostsScreen() {
         </TouchableOpacity>
       </View>
       <View style={styles.continerContent}>
-        <View style={styles.userPhoto}></View>
-        <Text style={styles.userData}>
-          {nameUser}
-          {"\n"}
-          {email}
-        </Text>
+        <View style={styles.continerUser}>
+          <View style={styles.userPhoto}></View>
+          <Text style={styles.userData}>
+            {nameUser}
+            {"\n"}
+            {email}
+          </Text>
+        </View>
+
+        <View style={styles.continerPhoto}></View>
+        <Text style={styles.namePhoto}>Name photo</Text>
+        <View style={styles.continerCommentMain}>
+          <View style={styles.continerComment}>
+            <TouchableOpacity
+              style={styles.comment}
+              onPress={() => navigation.navigate("Comment")}
+            >
+              <MaterialCommunityIcons
+                name={"comment"}
+                size={25}
+                color="#E2E2E2"
+              />
+              <Text>0</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.mapMarkerName}>
+            <MaterialCommunityIcons
+              name={"map-marker"}
+              size={25}
+              color="#E2E2E2"
+            />
+            <Text>Ukrain</Text>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -67,10 +95,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 12,
   },
-  continerContent: {
-    flex: 10,
+  continerUser: {
     flexDirection: "row",
     gap: 8,
+    marginBottom: 32,
+  },
+  continerContent: {
+    flex: 10,
   },
   userPhoto: {
     width: 60,
@@ -87,6 +118,39 @@ const styles = StyleSheet.create({
   },
   iconHeader: {
     paddingTop: 10,
+  },
+  continerPhoto: {
+    width: 343,
+    height: 240,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 16,
+  },
+  namePhoto: {
+    marginTop: 8,
+    marginBottom: 8,
+    marginLeft: 16,
+  },
+  continerCommentMain: {
+    flexDirection: "row",
+    gap: 40,
+    marginLeft: 16,
+  },
+  continerComment: {
+    flexDirection: "row",
+    gap: 24,
+  },
+  comment: {
+    flexDirection: "row",
+    gap: 6,
+  },
+  mapMarkerName: {
+    flexDirection: "row",
+    gap: 4,
   },
 });
 

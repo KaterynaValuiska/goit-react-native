@@ -1,11 +1,15 @@
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, setDoc, doc } from "firebase/firestore";
 
 import { db } from "../config";
 
-export const addPost = async (uid, post) => {
+export const addPost = async (userId, post) => {
   try {
-    await addDoc(collection(db, "posts"), { ...post, uid });
-    console.log(post);
+    // const postBD = await setDoc(doc(db, "collection", `${userId}`), post);
+    const postBD = await addDoc(collection(db, "posts"), {
+      ...post,
+      userId,
+    });
+    console.log(postBD);
   } catch (error) {
     throw new Error("DB Error");
   }
