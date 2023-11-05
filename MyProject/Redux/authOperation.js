@@ -42,6 +42,9 @@ export const logIn =
     try {
       await signInWithEmailAndPassword(auth, email, password);
       const currentUser = auth.currentUser;
+      await updateProfile(currentUser, {
+        displayName: currentUser.displayName,
+      });
       console.log(currentUser);
       const userUpdateData = {
         userId: currentUser.uid,

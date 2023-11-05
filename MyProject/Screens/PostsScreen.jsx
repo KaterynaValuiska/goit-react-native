@@ -4,6 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -11,18 +12,36 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../Redux/authSlice";
 import { logOut } from "../Redux/authOperation";
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
 
 function PostsScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [posts, setPosts] = useState([]);
+  const { email, nameUser } = useSelector((state) => state.auth);
+
+  // useEffect(() => {
+  //   const data = getAllPosts();
+  //   setPosts(data);
+  //   console.log(posts);
+  // }, []);
+
+  const getAllPosts = async () => {
+    let postsDB = [];
+    try {
+      const res = await getDocs(collection(db, "posts"));
+      res.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
+
+      console.log(postsDB);
+      return postsDB;
+    } catch (error) {
+      throw new Error("DB Error");
+    }
+  };
   const logOut = () => {
     dispatch(logout());
-    // navigation.navigate("Registration");
   };
-  const { email, nameUser } = useSelector((state) => state.auth);
-  // const {
-  //   params: { name, email },
-  // } = useRoute();
 
   return (
     <SafeAreaView style={styles.continer}>
@@ -47,31 +66,37 @@ function PostsScreen() {
           </Text>
         </View>
 
-        <View style={styles.continerPhoto}></View>
-        <Text style={styles.namePhoto}>Name photo</Text>
-        <View style={styles.continerCommentMain}>
-          <View style={styles.continerComment}>
-            <TouchableOpacity
-              style={styles.comment}
-              onPress={() => navigation.navigate("Comment")}
-            >
-              <MaterialCommunityIcons
-                name={"comment"}
-                size={25}
-                color="#E2E2E2"
-              />
-              <Text>0</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.mapMarkerName}>
-            <MaterialCommunityIcons
-              name={"map-marker"}
-              size={25}
-              color="#E2E2E2"
-            />
-            <Text>Ukrain</Text>
-          </View>
-        </View>
+        {posts.length > 0 && (
+          <>
+            <View style={styles.continerPhoto}>
+              <Image></Image>
+            </View>
+            <Text style={styles.namePhoto}>Name photo</Text>
+            <View style={styles.continerCommentMain}>
+              <View style={styles.continerComment}>
+                <TouchableOpacity
+                  style={styles.comment}
+                  onPress={() => navigation.navigate("Comment")}
+                >
+                  <MaterialCommunityIcons
+                    name={"comment"}
+                    size={25}
+                    color="#E2E2E2"
+                  />
+                  <Text>0</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.mapMarkerName}>
+                <MaterialCommunityIcons
+                  name={"map-marker"}
+                  size={25}
+                  color="#E2E2E2"
+                />
+                <Text>Ukrain</Text>
+              </View>
+            </View>
+          </>
+        )}
       </View>
     </SafeAreaView>
   );

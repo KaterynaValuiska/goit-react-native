@@ -15,11 +15,10 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
-import { addDoc, collection, setDoc, doc } from "firebase/firestore";
-
+import { addDoc, collection } from "firebase/firestore";
 import { db } from "../config";
-// import { addPost } from "../Redux/firestore";
 
 function CreatePostsScreen() {
   const navigation = useNavigation();
@@ -32,6 +31,7 @@ function CreatePostsScreen() {
   const [namePhoto, setNamePhoto] = useState("");
   const [location, setLocation] = useState("");
   const [uploadPhoto, setUploadPhoto] = useState(false);
+  const [spot, setSpot] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -40,6 +40,7 @@ function CreatePostsScreen() {
 
       setHasPermission(status === "granted");
     })();
+    getSpot();
   }, []);
 
   if (hasPermission === null) {
@@ -49,33 +50,44 @@ function CreatePostsScreen() {
     return <Text>No access to camera</Text>;
   }
 
-  const publish = () => {
-    // try {
-    const post = { photo, namePhoto, location, userId };
-    // await setDoc(doc(db, "cities", "LA"), {
-    //   name: "Los Angeles",
-    //   state: "CA",
-    //   country: "USA",
-    // });
-
-    const postBD = addDoc(collection(db, "posts"), {
-      ...post,
-      userId,
-    });
-    console.log(post);
-    console.log(userId);
-    console.log(postBD);
-    // } catch (error) {
-    //   throw new Error("DB Error");
-    // }
-    // dispatch(addPost(userId, post));
+  const publish = async () => {
+    try {
+      await getSpot();
+      const post = { photo, namePhoto, location, userId, spot };
+      await addDoc(collection(db, "posts"), { ...post });
+      console.log(post);
+      console.log("spot--->", spot);
+    } catch (error) {
+      throw new Error("DB Error");
+    }
     navigation.navigate("Home");
   };
+
+  const getSpot = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        throw new Error("Permission to access location was denied");
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      setSpot(coords);
+      console.log("cord", coords);
+      return spot;
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const deletPost = () => {
     setLocation("");
     setNamePhoto("");
     setPhoto("");
     setUploadPhoto(false);
+    setSpot(null);
   };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -114,7 +126,6 @@ function CreatePostsScreen() {
                         const { uri } = await cameraRef.takePictureAsync();
                         await MediaLibrary.createAssetAsync(uri);
                         setPhoto(uri);
-                        console.log(photo);
                       }
                     }}
                   >
@@ -234,7 +245,7 @@ const styles = StyleSheet.create({
   continerPhoto: {
     width: 343,
     height: 240,
-    // backgroundColor: "#F6F6F6",
+    backgroundColor: "#F6F6F6",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#E8E8E8",
