@@ -8,12 +8,92 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  Image,
+  ScrollView,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  updateDoc,
+  doc,
+  collection,
+  getDocs,
+  query,
+  where,
+  Timestamp,
+  addDoc,
+} from "firebase/firestore";
+import { db } from "../config";
 
 function CommentsScreen() {
+  const [comments, setComments] = useState([]);
+  const [text, setText] = useState("");
   const navigation = useNavigation();
+  const {
+    params: { id, photo },
+  } = useRoute();
+
+  const publishComents = async () => {
+    console.log("text", text);
+    // setComments(comments.push(text));
+    // console.log("comment", comments);
+    // updateFirestore("posts", id, text);
+    const com = await addComment(id, text);
+    console.log("com", com);
+    setText("");
+  };
+
+  useEffect(() => {
+    console.log("useEffect");
+    async function fetchData() {
+      const data = await getCommentsByPostId(id);
+      console.log("data", data);
+      setComments(data);
+      console.log("comments", comments);
+    }
+    fetchData();
+  }, []);
+
+  const getCommentsByPostId = async (pid) => {
+    let commentsDB = [];
+
+    const q = query(collection(db, "comments"), where("pid", "===", pid));
+    try {
+      const res = await getDocs(q);
+      res.forEach((doc) => commentsDB.push({ id: doc.id, ...doc.data() }));
+      console.log("pos", commentsDB);
+      return commentsDB;
+    } catch (error) {
+      throw new Error("DB Error");
+    }
+  };
+
+  // const updateFirestore = async (collectionName, docId, comText) => {
+  //   try {
+  //     const ref = doc(db, collectionName, docId);
+
+  //     await updateDoc(ref, {
+  //       comments: comText,
+  //     });
+  //     console.log("document updated");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  const addComment = async (pid, text) => {
+    try {
+      await addDoc(collection(db, "comments"), {
+        pid,
+        text,
+        createdAt: Timestamp.now(),
+      });
+      console.log("created Comment");
+    } catch (error) {
+      throw new Error("DB Error");
+    }
+  };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.continer}>
@@ -24,21 +104,38 @@ function CommentsScreen() {
           <Text style={styles.title}>Comments</Text>
         </View>
         <View style={styles.continerContent}>
-          <View style={styles.continerPhoto}></View>
-          <View></View>
+          <View style={styles.continerPhoto}>
+            <Image style={styles.photoImg} source={{ uri: photo }}></Image>
+          </View>
+          <ScrollView>
+            {comments.length > 0 && (
+              <>
+                {comments.map((post) => (
+                  <View key={post.id} style={styles.continerComment}>
+                    <Text style={styles.emailComment}>{post.createdAt}</Text>
+                    <Text style={styles.textComment}>{post.comments}</Text>
+                  </View>
+                ))}
+              </>
+            )}
+          </ScrollView>
           <View>
             <TextInput
               style={styles.input}
               placeholder="Comment..."
               placeholderTextColor="#aaa"
-              //   value={password}
+              value={text}
+              onChangeText={setText}
             />
-            <MaterialCommunityIcons
-              name={"arrow-up"}
-              size={25}
-              color={"white"}
-              style={styles.iconArrow}
-            />
+            <TouchableOpacity onPress={publishComents}>
+              <MaterialCommunityIcons
+                name={"arrow-up"}
+                size={25}
+                color={"white"}
+                style={styles.iconArrow}
+                onPress={publishComents}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>
@@ -80,6 +177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  photoImg: { width: 340, height: 240, borderRadius: 8 },
 
   input: {
     marginBottom: 0,
@@ -103,6 +201,24 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     top: -40,
     left: 300,
+  },
+  continerComment: {
+    width: 299,
+    height: 103,
+    backgroundColor: "#F6F6F6",
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    borderRadius: 8,
+    padding: 6,
+    marginTop: 24,
+  },
+  textComment: {
+    textAlign: "center",
+    fontSize: 18,
+  },
+  emailComment: {
+    fontSize: 12,
+    color: "#BDBDBD",
   },
 });
 export default CommentsScreen;

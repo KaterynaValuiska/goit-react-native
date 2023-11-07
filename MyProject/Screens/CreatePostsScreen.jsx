@@ -153,18 +153,6 @@ function CreatePostsScreen() {
                 />
               )}
             </View>
-
-            {/* <Pressable
-              style={styles.buttonLoadPhote}
-              onPress={() => console.debug("+")}
-            >
-              <MaterialCommunityIcons
-                name={"camera"}
-                size={25}
-                color="#aaa"
-                //   style={styles.iconPhote}
-              />
-            </Pressable> */}
           </View>
           <Text
             style={!photo ? textLoadPhote : textLoadPhoteActive}
@@ -301,8 +289,9 @@ const styles = StyleSheet.create({
     marginTop: 170,
   },
   photoWrapper: {
-    width: 330,
-    height: 230,
+    width: 340,
+    height: 240,
+    borderRadius: 8,
   },
 });
 

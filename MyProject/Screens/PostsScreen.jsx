@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -14,6 +15,8 @@ import { logout } from "../Redux/authSlice";
 import { logOut } from "../Redux/authOperation";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
+import { db } from "../config";
+import PostCard from "../Components/PostCard";
 
 function PostsScreen() {
   const navigation = useNavigation();
@@ -21,24 +24,28 @@ function PostsScreen() {
   const [posts, setPosts] = useState([]);
   const { email, nameUser } = useSelector((state) => state.auth);
 
-  // useEffect(() => {
-  //   const data = getAllPosts();
-  //   setPosts(data);
-  //   console.log(posts);
-  // }, []);
-
   const getAllPosts = async () => {
     let postsDB = [];
     try {
       const res = await getDocs(collection(db, "posts"));
-      res.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
-
-      console.log(postsDB);
+      // res.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
+      // return res.map((doc) => ({ id: doc.id, data: doc.data() }));
+      res.forEach((doc) => postsDB.push({ id: doc.id, ...doc.data() }));
       return postsDB;
     } catch (error) {
       throw new Error("DB Error");
     }
   };
+  useEffect(() => {
+    console.log("useEffect");
+    async function fetchData() {
+      const data = await getAllPosts();
+      setPosts(data);
+      console.log("posts", posts);
+    }
+    fetchData();
+  }, []);
+
   const logOut = () => {
     dispatch(logout());
   };
@@ -65,38 +72,15 @@ function PostsScreen() {
             {email}
           </Text>
         </View>
-
-        {posts.length > 0 && (
-          <>
-            <View style={styles.continerPhoto}>
-              <Image></Image>
-            </View>
-            <Text style={styles.namePhoto}>Name photo</Text>
-            <View style={styles.continerCommentMain}>
-              <View style={styles.continerComment}>
-                <TouchableOpacity
-                  style={styles.comment}
-                  onPress={() => navigation.navigate("Comment")}
-                >
-                  <MaterialCommunityIcons
-                    name={"comment"}
-                    size={25}
-                    color="#E2E2E2"
-                  />
-                  <Text>0</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.mapMarkerName}>
-                <MaterialCommunityIcons
-                  name={"map-marker"}
-                  size={25}
-                  color="#E2E2E2"
-                />
-                <Text>Ukrain</Text>
-              </View>
-            </View>
-          </>
-        )}
+        <ScrollView>
+          {posts.length > 0 && (
+            <>
+              {posts.map((post) => (
+                <PostCard key={post.id} {...post} />
+              ))}
+            </>
+          )}
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -144,39 +128,39 @@ const styles = StyleSheet.create({
   iconHeader: {
     paddingTop: 10,
   },
-  continerPhoto: {
-    width: 343,
-    height: 240,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#E8E8E8",
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: 16,
-  },
-  namePhoto: {
-    marginTop: 8,
-    marginBottom: 8,
-    marginLeft: 16,
-  },
-  continerCommentMain: {
-    flexDirection: "row",
-    gap: 40,
-    marginLeft: 16,
-  },
-  continerComment: {
-    flexDirection: "row",
-    gap: 24,
-  },
-  comment: {
-    flexDirection: "row",
-    gap: 6,
-  },
-  mapMarkerName: {
-    flexDirection: "row",
-    gap: 4,
-  },
+  // continerPhoto: {
+  //   width: 343,
+  //   height: 240,
+  //   backgroundColor: "#F6F6F6",
+  //   borderRadius: 16,
+  //   borderWidth: 1,
+  //   borderColor: "#E8E8E8",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   marginLeft: 16,
+  // },
+  // namePhoto: {
+  //   marginTop: 8,
+  //   marginBottom: 8,
+  //   marginLeft: 16,
+  // },
+  // continerCommentMain: {
+  //   flexDirection: "row",
+  //   gap: 40,
+  //   marginLeft: 16,
+  // },
+  // continerComment: {
+  //   flexDirection: "row",
+  //   gap: 24,
+  // },
+  // comment: {
+  //   flexDirection: "row",
+  //   gap: 6,
+  // },
+  // mapMarkerName: {
+  //   flexDirection: "row",
+  //   gap: 4,
+  // },
 });
 
 export default PostsScreen;
