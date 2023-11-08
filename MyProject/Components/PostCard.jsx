@@ -13,7 +13,7 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-export default function PostCard({ namePhoto, photo, location, id }) {
+export default function PostCard({ namePhoto, photo, location, id, spot }) {
   const navigation = useNavigation();
   return (
     <View style={styles.continer}>
@@ -36,12 +36,16 @@ export default function PostCard({ namePhoto, photo, location, id }) {
           </TouchableOpacity>
         </View>
         <View style={styles.mapMarkerName}>
-          <MaterialCommunityIcons
-            name={"map-marker"}
-            size={25}
-            color="#E2E2E2"
-          />
-          <Text>{location}</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Map", { spot, namePhoto })}
+          >
+            <MaterialCommunityIcons
+              name={"map-marker"}
+              size={25}
+              color="#E2E2E2"
+            />
+            <Text>{location}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

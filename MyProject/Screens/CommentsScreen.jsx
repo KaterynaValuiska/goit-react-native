@@ -26,6 +26,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 import { db } from "../config";
+import CommentItem from "../Components/CommentItem";
 
 function CommentsScreen() {
   const [comments, setComments] = useState([]);
@@ -37,10 +38,8 @@ function CommentsScreen() {
 
   const publishComents = async () => {
     console.log("text", text);
-    // setComments(comments.push(text));
-    // console.log("comment", comments);
-    // updateFirestore("posts", id, text);
     const com = await addComment(id, text);
+
     console.log("com", com);
     setText("");
   };
@@ -49,7 +48,7 @@ function CommentsScreen() {
     console.log("useEffect");
     async function fetchData() {
       const data = await getCommentsByPostId(id);
-      console.log("data", data);
+
       setComments(data);
       console.log("comments", comments);
     }
@@ -58,12 +57,11 @@ function CommentsScreen() {
 
   const getCommentsByPostId = async (pid) => {
     let commentsDB = [];
-
-    const q = query(collection(db, "comments"), where("pid", "===", pid));
+    const q = query(collection(db, "comments"), where("pid", "==", pid));
     try {
       const res = await getDocs(q);
       res.forEach((doc) => commentsDB.push({ id: doc.id, ...doc.data() }));
-      console.log("pos", commentsDB);
+
       return commentsDB;
     } catch (error) {
       throw new Error("DB Error");
@@ -83,13 +81,16 @@ function CommentsScreen() {
   //   }
   // };
   const addComment = async (pid, text) => {
+    const time = new Date().toUTCString();
+
     try {
-      await addDoc(collection(db, "comments"), {
+      const cc = await addDoc(collection(db, "comments"), {
         pid,
         text,
-        createdAt: Timestamp.now(),
+        createdAt: time,
       });
       console.log("created Comment");
+      return cc;
     } catch (error) {
       throw new Error("DB Error");
     }
@@ -111,10 +112,7 @@ function CommentsScreen() {
             {comments.length > 0 && (
               <>
                 {comments.map((post) => (
-                  <View key={post.id} style={styles.continerComment}>
-                    <Text style={styles.emailComment}>{post.createdAt}</Text>
-                    <Text style={styles.textComment}>{post.comments}</Text>
-                  </View>
+                  <CommentItem key={post.id} {...post} />
                 ))}
               </>
             )}
@@ -201,24 +199,6 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     top: -40,
     left: 300,
-  },
-  continerComment: {
-    width: 299,
-    height: 103,
-    backgroundColor: "#F6F6F6",
-    borderWidth: 1,
-    borderColor: "#E8E8E8",
-    borderRadius: 8,
-    padding: 6,
-    marginTop: 24,
-  },
-  textComment: {
-    textAlign: "center",
-    fontSize: 18,
-  },
-  emailComment: {
-    fontSize: 12,
-    color: "#BDBDBD",
   },
 });
 export default CommentsScreen;

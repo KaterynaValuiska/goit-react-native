@@ -11,6 +11,7 @@ import ProfileScreen from "../Screens/ProfileScreen";
 import CommentsScreen from "../Screens/CommentsScreen";
 import { useSelector } from "react-redux";
 import { authStateChangeUser } from "../Redux/authOperation";
+import MapScreen from "../Screens/MapScreen";
 
 const MainStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,6 +41,7 @@ export default function Navigator() {
           <MainStack.Screen name={"Tab"} component={TabNav} />
           {/* <MainStack.Screen name="Home" component={PostsScreen} /> */}
           <MainStack.Screen name="Comment" component={CommentsScreen} />
+          <MainStack.Screen name="Map" component={MapScreen} />
         </>
       )}
     </MainStack.Navigator>
