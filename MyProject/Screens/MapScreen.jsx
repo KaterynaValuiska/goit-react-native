@@ -18,6 +18,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function MapScreen() {
   const navigation = useNavigation();
+  console.log(spot);
   const {
     params: { spot, namePhoto },
   } = useRoute();
