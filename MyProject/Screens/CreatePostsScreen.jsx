@@ -49,20 +49,6 @@ function CreatePostsScreen() {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
-
-  const publish = async () => {
-    try {
-      await getSpot();
-      const post = { photo, namePhoto, location, userId, spot };
-      await addDoc(collection(db, "posts"), { ...post });
-      console.log(post);
-      console.log("spot--->", spot);
-    } catch (error) {
-      throw new Error("DB Error");
-    }
-    navigation.navigate("Home");
-  };
-
   const getSpot = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -80,6 +66,18 @@ function CreatePostsScreen() {
     } catch (error) {
       console.log(error.message);
     }
+  };
+  const publish = async () => {
+    try {
+      await getSpot();
+      const post = { photo, namePhoto, location, userId, spot };
+      await addDoc(collection(db, "posts"), { ...post });
+      console.log(post);
+      console.log("spot--->", spot);
+    } catch (error) {
+      throw new Error("DB Error");
+    }
+    navigation.navigate("Home");
   };
 
   const deletPost = () => {
