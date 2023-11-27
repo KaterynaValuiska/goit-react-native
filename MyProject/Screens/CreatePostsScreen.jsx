@@ -40,12 +40,11 @@ function CreatePostsScreen() {
 
       setHasPermission(status === "granted");
     })();
-    getSpot();
   }, []);
 
-  if (hasPermission === null) {
-    return <View />;
-  }
+  // if (hasPermission === null) {
+  //   return <View />;
+  // }
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
@@ -62,6 +61,7 @@ function CreatePostsScreen() {
       };
       setSpot(coords);
       console.log("cord", coords);
+      console.log("spot", spot);
       return spot;
     } catch (error) {
       console.log(error.message);
@@ -70,7 +70,7 @@ function CreatePostsScreen() {
   const publish = async () => {
     try {
       await getSpot();
-      const post = { photo, namePhoto, location, userId, spot };
+      const post = { photo, namePhoto, location, userId, spot: coords };
       await addDoc(collection(db, "posts"), { ...post });
       console.log(post);
       console.log("spot--->", spot);
@@ -154,7 +154,10 @@ function CreatePostsScreen() {
           </View>
           <Text
             style={!photo ? textLoadPhote : textLoadPhoteActive}
-            onPress={() => setUploadPhoto(true)}
+            onPress={() => {
+              setUploadPhoto(true);
+              getSpot();
+            }}
           >
             Upload photo
           </Text>

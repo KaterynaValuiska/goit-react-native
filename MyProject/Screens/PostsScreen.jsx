@@ -52,7 +52,7 @@ function PostsScreen() {
 
   return (
     <SafeAreaView style={styles.continer}>
-      <View style={styles.continerHeader}>
+      {/* <View style={styles.continerHeader}>
         <Text style={styles.title}>Publications</Text>
         <TouchableOpacity onPress={logOut}>
           <MaterialCommunityIcons
@@ -62,7 +62,7 @@ function PostsScreen() {
             style={styles.iconHeader}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View style={styles.continerContent}>
         <View style={styles.continerUser}>
           <View style={styles.userPhoto}></View>

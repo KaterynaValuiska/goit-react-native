@@ -30,6 +30,7 @@ function LoginScreen() {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
   const signUp = () => {
     dispatch(logIn({ email, password }));
     // const user = logIn({ email, password });

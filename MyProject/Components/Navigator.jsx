@@ -9,22 +9,27 @@ import PostsScreen from "../Screens/PostsScreen";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import CommentsScreen from "../Screens/CommentsScreen";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { authStateChangeUser } from "../Redux/authOperation";
 import MapScreen from "../Screens/MapScreen";
-
+import { Button, StyleSheet, TouchableOpacity } from "react-native";
+import { logout } from "../Redux/authSlice";
 const MainStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function Navigator() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const dispatch = useDispatch();
   useEffect(() => {
     authStateChangeUser();
   }, []);
+  const logOut = () => {
+    dispatch(logout());
+  };
   return (
     <MainStack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}
       initialRouteName="App"
     >
@@ -33,15 +38,68 @@ export default function Navigator() {
           <MainStack.Screen
             name="Registration"
             component={RegistrationScreen}
+            options={{
+              title: "",
+              headerTitleStyle: {
+                display: "none",
+              },
+            }}
           />
-          <MainStack.Screen name="Login" component={LoginScreen} />
+          <MainStack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+              title: "",
+              headerTitleStyle: {
+                display: "none",
+              },
+            }}
+          />
         </>
       ) : (
         <>
-          <MainStack.Screen name={"Tab"} component={TabNav} />
+          <MainStack.Screen
+            name={"Tab"}
+            component={TabNav}
+            options={{
+              title: "Publications",
+              headerTitleStyle: {
+                paddingLeft: 70,
+                fontSize: 22,
+              },
+              headerRight: () => (
+                <TouchableOpacity onPress={logOut}>
+                  <MaterialCommunityIcons
+                    name={"export"}
+                    size={25}
+                    color="#aaa"
+                    style={styles.iconHeader}
+                  />
+                </TouchableOpacity>
+              ),
+            }}
+          />
           {/* <MainStack.Screen name="Home" component={PostsScreen} /> */}
-          <MainStack.Screen name="Comment" component={CommentsScreen} />
-          <MainStack.Screen name="Map" component={MapScreen} />
+          <MainStack.Screen
+            name="Comment"
+            component={CommentsScreen}
+            options={{
+              title: "Comments",
+              headerTitleStyle: {
+                paddingLeft: 70,
+              },
+            }}
+          />
+          <MainStack.Screen
+            name="Map"
+            component={MapScreen}
+            options={{
+              title: "Location",
+              headerTitleStyle: {
+                paddingLeft: 70,
+              },
+            }}
+          />
         </>
       )}
     </MainStack.Navigator>
@@ -114,3 +172,10 @@ const TabNav = () => {
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  iconHeader: {
+    paddingTop: 10,
+    paddingRight: 16,
+  },
+});

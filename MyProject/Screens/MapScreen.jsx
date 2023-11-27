@@ -26,12 +26,12 @@ export default function MapScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.continer}>
-        <View style={styles.continerHeader}>
+        {/* <View style={styles.continerHeader}>
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
             <MaterialCommunityIcons name={"keyboard-backspace"} size={25} />
           </TouchableOpacity>
           <Text style={styles.title}>Location</Text>
-        </View>
+        </View> */}
         <View style={styles.wrapper}>
           <MapView
             style={styles.mapStyle}

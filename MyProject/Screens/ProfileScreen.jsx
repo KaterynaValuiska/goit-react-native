@@ -5,14 +5,31 @@ import {
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  ScrollView,
+  Image,
 } from "react-native";
 import image from "../Images/PhotoBG.png";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getPostsByUserId } from "../Redux/firestore";
+import { useSelector } from "react-redux";
+
 function ProfileScreen() {
+  const { nameUser, userId } = useSelector((state) => state.auth);
   const navigation = useNavigation();
   const [count, setCount] = useState(0);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    console.log("useEffect");
+    async function fetchData() {
+      const data = await getPostsByUserId(userId);
+      setPosts(data);
+      console.log("data", data);
+    }
+    fetchData();
+  }, [userId]);
   return (
     <SafeAreaView style={styles.containerMain}>
       <ImageBackground
@@ -30,43 +47,69 @@ function ProfileScreen() {
               style={styles.iconHeader}
             />
           </TouchableOpacity>
-          <Text style={styles.title}>User name</Text>
-          <View style={styles.continerPhoto}></View>
-          <Text style={styles.namePhoto}>Name photo</Text>
-          <View style={styles.continerCommentMain}>
-            <View style={styles.continerComment}>
-              <TouchableOpacity
-                style={styles.comment}
-                onPress={() => navigation.navigate("Comment")}
-              >
-                <MaterialCommunityIcons
-                  name={"comment"}
-                  size={25}
-                  color="#FF6C00"
-                />
-                <Text>0</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.comment}
-                onPress={() => setCount(count + 1)}
-              >
-                <MaterialCommunityIcons
-                  name={"thumb-up-outline"}
-                  size={25}
-                  color="#FF6C00"
-                />
-                <Text>{count}</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.mapMarkerName}>
-              <MaterialCommunityIcons
-                name={"map-marker"}
-                size={25}
-                color="#FF6C00"
-              />
-              <Text>Ukrain</Text>
-            </View>
-          </View>
+          <Text style={styles.title}>{nameUser}</Text>
+          {posts.length > 0 && (
+            <ScrollView>
+              {posts.map((post) => (
+                <View key={post.id}>
+                  <View style={styles.continerPhoto}>
+                    <Image
+                      style={styles.photoImg}
+                      source={{ uri: post.photo }}
+                    ></Image>
+                  </View>
+                  <Text style={styles.namePhoto}>{post.namePhoto}</Text>
+                  <View style={styles.continerCommentMain}>
+                    <View style={styles.continerComment}>
+                      <TouchableOpacity
+                        style={styles.comment}
+                        onPress={() =>
+                          navigation.navigate("Comment", {
+                            id: post.id,
+                            photo: post.photo,
+                          })
+                        }
+                      >
+                        <MaterialCommunityIcons
+                          name={"comment"}
+                          size={25}
+                          color="#FF6C00"
+                        />
+                        <Text>0</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.comment}
+                        onPress={() => setCount(count + 1)}
+                      >
+                        <MaterialCommunityIcons
+                          name={"thumb-up-outline"}
+                          size={25}
+                          color="#FF6C00"
+                        />
+                        <Text>{count}</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.mapMarkerName}
+                      onPress={() =>
+                        navigation.navigate("Map", {
+                          spot: post.spot,
+                          namePhoto: post.namePhoto,
+                        })
+                      }
+                    >
+                      <MaterialCommunityIcons
+                        name={"map-marker"}
+                        size={25}
+                        color="#FF6C00"
+                      />
+                      <Text>{post.location}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
+          )}
         </View>
       </ImageBackground>
     </SafeAreaView>
@@ -121,6 +164,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 25,
   },
+  photoImg: { width: 340, height: 240, borderRadius: 8 },
   namePhoto: {
     marginTop: 8,
     marginBottom: 8,

@@ -27,6 +27,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../config";
 import CommentItem from "../Components/CommentItem";
+import { addComment, getCommentsByPostId } from "../Redux/firestore";
 
 function CommentsScreen() {
   const [comments, setComments] = useState([]);
@@ -55,19 +56,6 @@ function CommentsScreen() {
     fetchData();
   }, []);
 
-  const getCommentsByPostId = async (pid) => {
-    let commentsDB = [];
-    const q = query(collection(db, "comments"), where("pid", "==", pid));
-    try {
-      const res = await getDocs(q);
-      res.forEach((doc) => commentsDB.push({ id: doc.id, ...doc.data() }));
-
-      return commentsDB;
-    } catch (error) {
-      throw new Error("DB Error");
-    }
-  };
-
   // const updateFirestore = async (collectionName, docId, comText) => {
   //   try {
   //     const ref = doc(db, collectionName, docId);
@@ -80,30 +68,16 @@ function CommentsScreen() {
   //     console.log(error);
   //   }
   // };
-  const addComment = async (pid, text) => {
-    const time = new Date().toUTCString();
 
-    try {
-      const cc = await addDoc(collection(db, "comments"), {
-        pid,
-        text,
-        createdAt: time,
-      });
-      console.log("created Comment");
-      return cc;
-    } catch (error) {
-      throw new Error("DB Error");
-    }
-  };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.continer}>
-        <View style={styles.continerHeader}>
+        {/* <View style={styles.continerHeader}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialCommunityIcons name={"keyboard-backspace"} size={25} />
           </TouchableOpacity>
           <Text style={styles.title}>Comments</Text>
-        </View>
+        </View> */}
         <View style={styles.continerContent}>
           <View style={styles.continerPhoto}>
             <Image style={styles.photoImg} source={{ uri: photo }}></Image>
